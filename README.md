@@ -22,7 +22,7 @@ Aplikasi ini dibangun menggunakan **CodeIgniter 4** dengan menerapkan arsitektur
 ## 🚧 Progress Pengembangan (Roadmap / To-Do List)
 
 - [x] **Setup Proyek & Database:** Migration & Seeder dasar.
-- [/] **Authentication:** Register & Login (JWT) + Hash Password via **Entity Mutator**.
+- [ ] **Authentication:** Register & Login (JWT) + Hash Password via **Entity Mutator**.
 - [ ] **Manajemen Produk:** CRUD Katalog & Filter Kategori *(Sedang Dikerjakan)*.
 - [ ] **Pembayaran:** Integrasi Midtrans Payment Gateway *(Custom Service)*.
 - [ ] **Pelaporan:** Export PDF Laporan Transaksi.
