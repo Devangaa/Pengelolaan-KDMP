@@ -1,69 +1,109 @@
-# CodeIgniter 4 Application Starter
+# 🚀 [Nama Proyek Kamu]
 
-## What is CodeIgniter?
+<!-- BAGIAN 1: BADGE & WARNING STATUS DEVELOPMENT -->
+![Status](https://img.shields.io/badge/Status-Work%20In%20Progress-orange?style=for-the-badge)
+![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php)
+![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.x-EF4223?style=for-the-badge&logo=codeigniter)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql)
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+> ⚠️ **PERINGATAN (WORK IN PROGRESS):**  
+> Aplikasi ini masih dalam **tahap pengembangan aktif**. Fitur, struktur database, dan endpoint API belum stabil serta dapat berubah sewaktu-waktu.
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+---
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## 📌 Gambaran Umum (Overview)
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+**Sistem Manajemen Koperasi Desa Merah Putih** adalah aplikasi berbasis web yang dirancang untuk mengelola operasional harian koperasi desa. Aplikasi ini mencakup pencatatan data inventaris barang, pendataan anggota koperasi, serta pengelolaan transaksi penjualan oleh kasir (kalkulasi kembalian, cetak struk, dan pemotongan stok otomatis).
 
-## Installation & updates
+Aplikasi ini dibangun menggunakan **CodeIgniter 4** dengan menerapkan arsitektur *Clean Code* (Entity, Model, Service) serta pembatasan hak akses berbasis peran (*Role-Based Access Control*: Admin & Kasir).
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+---
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+## 🚧 Progress Pengembangan (Roadmap / To-Do List)
 
-## Setup
+- [x] **Setup Proyek & Database:** Migration & Seeder dasar.
+- [/] **Authentication:** Register & Login (JWT) + Hash Password via **Entity Mutator**.
+- [ ] **Manajemen Produk:** CRUD Katalog & Filter Kategori *(Sedang Dikerjakan)*.
+- [ ] **Pembayaran:** Integrasi Midtrans Payment Gateway *(Custom Service)*.
+- [ ] **Pelaporan:** Export PDF Laporan Transaksi.
+- [ ] **Testing:** Automated Unit Testing.
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+---
 
-## Important Change with index.php
+## 👥 Hak Akses User
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+| Role | Hak Akses Fitur |
+| :--- | :--- |
+| **Admin** | Kelola Data User, Barang, Kategori, Anggota, serta Laporan Penjualan[cite: 2]. |
+| **Kasir** | Transaksi Penjualan (POS), Cek Stok Barang, dan Riwayat Transaksi[cite: 2]. |
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+---
 
-**Please** read the user guide for a better explanation of how CI4 works!
+## 🛠️ Tech Stack & Prasyarat
 
-## Repository Management
+- **Framework:** CodeIgniter 4.x
+- **Bahasa Pemrograman:** PHP `>= 8.1` / `8.2` (Ekstensi: `intl`, `mbstring`, `curl`)
+- **Database:** MySQL 8.0 / MariaDB 10.4
+- **Dependency Manager:** Composer `>= 2.0`
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+---
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+## 🚀 Cara Menjalankan di Komputer Lokal (Quick Start)
 
-## Server Requirements
+Tuliskan langkah-langkah instalasi secara berurutan agar siapa saja (termasuk kamu di komputer lain) bisa langsung menjalankannya:
 
-PHP version 8.2 or higher is required, with the following extensions installed:
+### 1. Clone Repositori
+```bash
+git clone [https://github.com/Devangaa/Pengelolaan-KDMP](https://github.com/Devangaa/Pengelolaan-KDMP)
+cd nama-proyek
+```
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+### 2. Install Dependensi (Composer)
+```bash
+composer install
+```
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - The end of life date for PHP 8.1 was December 31, 2025.
-> - If you are still using below PHP 8.2, you should upgrade immediately.
-> - The end of life date for PHP 8.2 will be December 31, 2026.
+### 3. Konfigurasi Environment (`.env`)
+Salin file template `.env.example` menjadi `.env`:
+```bash
+cp .env.example .env
+```
+Buka file `.env` dan sesuaikan pengaturan database lokal kamu:
+```ini
+database.default.hostname = localhost
+database.default.database = db_nama_proyek
+database.default.username = root
+database.default.password = 
+```
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+### 4. Jalankan Database Migration & Seeder
+```bash
+php spark migrate
+php spark db:seed DatabaseSeeder
+```
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+### 5. Jalankan Server Lokal
+```bash
+php spark serve
+```
+Akses aplikasi melalui browser/Postman di: `http://localhost:8080`
+
+---
+
+## 📐 Ringkasan Arsitektur Kode
+
+Penjelasan singkat tentang bagaimana kodingan diatur di proyek ini:
+
+* **Entities (`app/Entities/`):** Mengelola logika bisnis atribut dan transformasi data individual (misal: otomatis meng-hash password user di `setPassword()`, format mata uang Rupiah `harga_jual`, dan kalkulasi `subtotal` transaksi)[cite: 2].
+* **Models (`app/Models/`):** Menangani interaksi dan kueri database (misal: kueri stok barang, SQL `JOIN` antara transaksi dan detail transaksi, serta pemotongan stok otomatis)[cite: 2].
+* **Services (`app/Services/`):** Alat bantu/utilitas global yang digunakan lintas modul (misal: Service pencetak struk/PDF, ekspor laporan penjualan, dan manajemen session/auth).
+* **Controllers (`app/Controllers/`):** Pengatur alur utama yang menerima *Request* dari user (Admin/Kasir), memanggil Model/Entity/Service terkait, dan mengembalikan *Response* (View/JSON)[cite: 2].
+
+> 📖 *Dokumentasi teknis lebih detail mengenai alur data dapat dibaca di file [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).*
+
+---
+
+## 👥 Tim & Kontribusi
+
+* **Pengembang:** [Devangaa] ([@Devangaa](https://github.com/Devangaa))
+* **Catatan Branch:** Pengembangan fitur baru wajib dilakukan di *branch* `develop` atau `feature/nama-fitur`.
