@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use CodeIgniter\Model;
+use App\Entities\User;
 
 class UserModel extends BaseModel
 {
@@ -18,11 +19,7 @@ class UserModel extends BaseModel
         'role',
     ];
 
-    protected bool $allowEmptyInserts = false;
-    protected bool $updateOnlyChanged = true;
-
-    protected array $casts = [];
-    protected array $castHandlers = [];
+    protected $returnType = User::class;
 
     // Pengaturan Timestamps
     protected $useTimestamps = true;
@@ -58,19 +55,4 @@ class UserModel extends BaseModel
             'in_list'     => 'Role harus berupa "admin" atau "kasir".',
         ],
     ];
-    protected $skipValidation       = false;
-    protected $cleanValidationRules = true;
-
-    // Event Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert = ['hashPassword', 'generateUUID'];
-    protected $beforeUpdate = ['hashPassword'];
-
-    protected function hashPassword(array $data)
-    {
-        if (isset($data['data']['password'])) {
-            $data['data']['password'] = password_hash($data['data']['password'], PASSWORD_BCRYPT);
-        }
-        return $data;
-    }
 }

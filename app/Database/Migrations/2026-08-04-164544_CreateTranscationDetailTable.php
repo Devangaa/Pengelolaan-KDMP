@@ -32,14 +32,14 @@ class CreateTranscationDetailsTable extends Migration
                 'constraint' => 20,
                 'unsigned'   => true,
             ],
-            'created_at' => [
-                'type' => 'DATETIME',
-                'null' => false,
-            ],
             'subtotal' => [
                 'type'       => 'INT',
                 'constraint' => 20,
                 'unsigned'   => true,
+            ],
+            'created_at' => [
+                'type' => 'DATETIME',
+                'null' => false,
             ],
             'updated_at' => [
                 'type' => 'DATETIME',
