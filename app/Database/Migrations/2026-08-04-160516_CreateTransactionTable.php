@@ -20,10 +20,12 @@ class CreateTransactionsTable extends Migration
             'user_id' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 36,
+                'null' => true,
             ],
             'member_id' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 36,
+                'null' => true,
             ],
             'total' => [
                 'type'       => 'INT',

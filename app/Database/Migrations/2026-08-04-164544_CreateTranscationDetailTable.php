@@ -17,10 +17,12 @@ class CreateTranscationDetailsTable extends Migration
             'transaction_id' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 36,
+                'null' => true,
             ],
             'product_id' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 36,
+                'null' => true,
             ],
             'price' => [
                 'type'       => 'INT',
