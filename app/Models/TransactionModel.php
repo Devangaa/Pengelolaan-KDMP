@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use CodeIgniter\Model;
+use App\Models\BaseModel;
 
-class TransactionModel extends Model
+class TransactionModel extends BaseModel
 {
     protected $table            = 'transactions';
     protected $useSoftDeletes   = true;

@@ -11,6 +11,7 @@ class TestSeeder extends Seeder
         echo "Running Test Data Seeders...\n";
 
         $this->call('MemberSeeder');
+        $this->call('ProductCategorySeeder');
         $this->call('ProductSeeder');
         $this->call('TransactionSeeder'); 
 

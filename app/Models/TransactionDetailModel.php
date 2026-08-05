@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use CodeIgniter\Model;
+use App\Models\BaseModel;
 
-class TransactionDetailModel extends Model
+class TransactionDetailModel extends BaseModel
 {
-    protected $table            = 'transactiondetails';
+    protected $table            = 'transaction_details';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
 

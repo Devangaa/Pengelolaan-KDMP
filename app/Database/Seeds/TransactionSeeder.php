@@ -21,6 +21,9 @@ class TransactionSeeder extends Seeder
         $transactionModel       = new TransactionModel();
         $transactionDetailModel = new TransactionDetailModel();
 
+        $transactionModel->protect(false);
+        $transactionDetailModel->protect(false);
+
         $userIds   = $userModel->findColumn('id');
         $memberIds = $memberModel->findColumn('id');
         $products  = $productModel->findAll();
@@ -55,7 +58,7 @@ class TransactionSeeder extends Seeder
             for ($j = 0; $j < $itemCount; $j++) {
                 $product  = $faker->randomElement($products);
                 $quantity = rand(1, 5);
-                $price    = (int) $product['price'];
+                $price    = (int) $product['sell_price'];
                 $subtotal = $price * $quantity;
 
                 $grandTotal += $subtotal;
@@ -65,6 +68,8 @@ class TransactionSeeder extends Seeder
                     'price'      => $price,
                     'quantity'   => $quantity,
                     'subtotal'   => $subtotal,
+                    'created_at' => $fullDateTime,
+                    'updated_at' => $fullDateTime,
                 ];
             }
 
@@ -82,10 +87,13 @@ class TransactionSeeder extends Seeder
                 'pay'            => $pay,
                 'change'         => $change,
                 'created_at'     => $fullDateTime,
+                'updated_at'     => $fullDateTime,
             ];
 
-            $transactionModel->save($transactionData);
-            $insertedUUID = $transactionModel->getInsertID();
+            $insertedUUID = $transactionModel->insert($transactionData);
+            if ($insertedUUID === false) {
+                continue;
+            }
 
             foreach ($detailsData as $detail) {
                 $detail['transaction_id'] = $insertedUUID;

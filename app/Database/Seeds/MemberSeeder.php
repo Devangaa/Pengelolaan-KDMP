@@ -12,18 +12,15 @@ class MemberSeeder extends Seeder
         $faker = \Faker\Factory::create('id_ID');
         $memberModel = new MemberModel();
 
-        $data = [];
-
         for ($i = 0; $i < 10; $i++) {
-            $data[] = [
+            $member = [
                 'nik'        => $faker->unique()->numerify('3509############'),
                 'name'       => $faker->name(),
                 'address'    => $faker->address(),
-                'phone'      => $faker->phoneNumber(),
+                'phone'      => $faker->numerify('08##########'),
             ];
 
-
-            $memberModel->save($data);
+            $memberModel->save($member);
         }
     }
 }
