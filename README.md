@@ -1,4 +1,4 @@
-# 🚀 [Nama Proyek Kamu]
+# 🚀 PENGELOLAAN KDMP
 
 <!-- BAGIAN 1: BADGE & WARNING STATUS DEVELOPMENT -->
 ![Status](https://img.shields.io/badge/Status-Work%20In%20Progress-orange?style=for-the-badge)
