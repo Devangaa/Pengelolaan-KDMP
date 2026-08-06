@@ -66,15 +66,37 @@ class ProductModel extends BaseModel
         ],
     ];
 
-    public function getProductsWithCategory($id = null)
+    public function getFilteredProducts($categoryId = null, $search = null, $sort = 'popular')
     {
-        $builder = $this->select('products.*, product_categories.name as category_name')
-                        ->join('product_categories', 'products.category_id = product_categories.id', 'left');
+        $this->select('products.*, product_categories.name as category_name, COALESCE(SUM(transaction_details.quantity), 0) as total_sold')
+            ->join('product_categories', 'products.category_id = product_categories.id', 'left')
+            ->join('transaction_details', 'transaction_details.product_id = products.id', 'left')
+            ->where('products.stock >', 0)
+            ->groupBy('products.id');
 
-        if ($id !== null) {
-            return $builder->where('products.id', $id)->first();
+        if ($categoryId) {
+            $this->where('products.category_id', $categoryId);
         }
 
-        return $builder->findAll();
+        if ($search) {
+            $this->like('products.name', $search);
+        }
+
+        switch ($sort) {
+            case 'name_asc':   $this->orderBy('products.name', 'ASC'); break;
+            case 'name_desc':  $this->orderBy('products.name', 'DESC'); break;
+            case 'price_asc':  $this->orderBy('products.sell_price', 'ASC'); break;
+            case 'price_desc': $this->orderBy('products.sell_price', 'DESC'); break;
+            case 'newest':     $this->orderBy('products.id', 'DESC'); break;
+            case 'popular':
+            default:           $this->orderBy('total_sold', 'DESC'); break;
+        }
+
+        return $this; 
+    }
+
+    public function getPopularProducts($limit = 8)
+    {
+        return $this->getFilteredProducts(null, null, 'popular')->findAll($limit);
     }
 }
