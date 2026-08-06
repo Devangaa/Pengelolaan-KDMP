@@ -22,8 +22,10 @@
             </div>
         </div>
 
-        <div class="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-            <img src="<?= base_url('assets/images/hero.webp') ?>" alt="Koperasi Merah Putih" class="h-[420px] w-full rounded-xl object-cover">
+        <div class="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+            <img src="<?= base_url('assets/images/hero.webp') ?>" 
+                alt="Koperasi Merah Putih" 
+                class="h-[420px] w-full rounded-xl object-cover transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:rounded-none">
         </div>
     </div>
 </section>

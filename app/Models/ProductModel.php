@@ -71,7 +71,6 @@ class ProductModel extends BaseModel
         $this->select('products.*, product_categories.name as category_name, COALESCE(SUM(transaction_details.quantity), 0) as total_sold')
             ->join('product_categories', 'products.category_id = product_categories.id', 'left')
             ->join('transaction_details', 'transaction_details.product_id = products.id', 'left')
-            ->where('products.stock >', 0)
             ->groupBy('products.id');
 
         if ($categoryId) {
@@ -81,6 +80,8 @@ class ProductModel extends BaseModel
         if ($search) {
             $this->like('products.name', $search);
         }
+
+        $this->orderBy('(CASE WHEN products.stock > 0 THEN 0 ELSE 1 END)', 'ASC');
 
         switch ($sort) {
             case 'name_asc':   $this->orderBy('products.name', 'ASC'); break;
