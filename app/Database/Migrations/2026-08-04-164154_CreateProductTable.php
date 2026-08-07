@@ -20,6 +20,7 @@ class CreateProductsTable extends Migration
             'category_id' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 36,
+                'null' => true,
             ],
             'buy_price' => [
                 'type'       => 'INT',
@@ -39,6 +40,16 @@ class CreateProductsTable extends Migration
             'unit' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 20,
+            ],
+            'description' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255 ,
+                'null'       => true,
+            ],
+            'image' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
+                'null'       => true,
             ],
             'created_at' => [
                 'type' => 'DATETIME',
@@ -61,6 +72,6 @@ class CreateProductsTable extends Migration
 
     public function down()
     {
-        //
+        $this->forge->dropTable('products', true);
     }
 }

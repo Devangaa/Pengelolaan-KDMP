@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use CodeIgniter\Model;
+use App\Models\BaseModel;
 
 class ProductModel extends BaseModel
 {
@@ -18,6 +18,8 @@ class ProductModel extends BaseModel
         'sell_price',
         'stock',
         'unit',
+        'description',
+        'image',
     ];
 
     // Dates
@@ -35,6 +37,8 @@ class ProductModel extends BaseModel
         'sell_price' => 'required|integer|greater_than_equal_to[0]',
         'stock' => 'required|integer|greater_than_equal_to[0]',
         'unit' => 'required|max_length[20]',
+        'description' => 'permit_empty|max_length[255]',
+        'image' => 'permit_empty|is_image[image]|max_size[image,1024]|ext_in[image,png,jpg,jpeg,gif,webp]',
     ];
     protected $validationMessages   = [
         'name' => [
@@ -64,17 +68,48 @@ class ProductModel extends BaseModel
             'required' => 'Satuan wajib diisi.',
             'max_length' => 'Satuan maksimal 20 karakter.',
         ],
+        'description' => [
+            'max_length' => 'Deskripsi maksimal 255 karakter.',
+        ],
+        'image' => [
+            'is_image' => 'File harus berupa gambar.',
+            'max_size' => 'Ukuran gambar maksimal 1MB.',
+            'ext_in' => 'Format gambar harus berupa PNG, JPG, JPEG, GIF, atau WEBP.',
+        ],
     ];
 
-    public function getProductsWithCategory($id = null)
+    public function getFilteredProducts($categoryId = null, $search = null, $sort = 'popular')
     {
-        $builder = $this->select('products.*, product_categories.name as category_name')
-                        ->join('product_categories', 'products.category_id = product_categories.id', 'left');
+        $this->select('products.*, product_categories.name as category_name, COALESCE(SUM(transaction_details.quantity), 0) as total_sold')
+            ->join('product_categories', 'products.category_id = product_categories.id', 'left')
+            ->join('transaction_details', 'transaction_details.product_id = products.id', 'left')
+            ->groupBy('products.id');
 
-        if ($id !== null) {
-            return $builder->where('products.id', $id)->first();
+        if ($categoryId) {
+            $this->where('products.category_id', $categoryId);
         }
 
-        return $builder->findAll();
+        if ($search) {
+            $this->like('products.name', $search);
+        }
+
+        $this->orderBy('(CASE WHEN products.stock > 0 THEN 0 ELSE 1 END)', 'ASC');
+
+        switch ($sort) {
+            case 'name_asc':   $this->orderBy('products.name', 'ASC'); break;
+            case 'name_desc':  $this->orderBy('products.name', 'DESC'); break;
+            case 'price_asc':  $this->orderBy('products.sell_price', 'ASC'); break;
+            case 'price_desc': $this->orderBy('products.sell_price', 'DESC'); break;
+            case 'newest':     $this->orderBy('products.id', 'DESC'); break;
+            case 'popular':
+            default:           $this->orderBy('total_sold', 'DESC'); break;
+        }
+
+        return $this; 
+    }
+
+    public function getPopularProducts($limit = 8)
+    {
+        return $this->getFilteredProducts(null, null, 'popular')->findAll($limit);
     }
 }

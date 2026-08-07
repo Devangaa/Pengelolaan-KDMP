@@ -10,7 +10,7 @@ class CreateProductCategoriesTable extends Migration
     {
         $this->forge->addField([
             'id' => [
-                'type'       => 'INT',
+                'type'       => 'VARCHAR',
                 'constraint' => 36,
                 'auto_increment' => true,
             ],

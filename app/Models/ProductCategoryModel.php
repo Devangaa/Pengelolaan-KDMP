@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use CodeIgniter\Model;
+use App\Models\BaseModel;
 
 class ProductCategoryModel extends BaseModel
 {
@@ -33,4 +33,9 @@ class ProductCategoryModel extends BaseModel
             'is_unique' => 'Nama kategori ini sudah terdaftar di sistem.',
         ],
     ];
+
+    public function getProductCategories()
+    {
+        return $this->findAll();
+    }
 }

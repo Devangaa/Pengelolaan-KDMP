@@ -10,17 +10,19 @@ class CreateTranscationDetailsTable extends Migration
     {
         $this->forge->addField([
             'id' => [
-                'type'       => 'INT',
+                'type'       => 'VARCHAR',
                 'constraint' => 36,
                 'auto_increment' => true,
             ],
             'transaction_id' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 36,
+                'null' => true,
             ],
             'product_id' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 36,
+                'null' => true,
             ],
             'price' => [
                 'type'       => 'INT',

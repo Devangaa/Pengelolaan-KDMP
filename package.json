@@ -1,0 +1,31 @@
+{
+  "name": "kdmp",
+  "version": "1.0.0",
+  "description": "<!-- BAGIAN 1: BADGE & WARNING STATUS DEVELOPMENT --> ![Status](https://img.shields.io/badge/Status-Work%20In%20Progress-orange?style=for-the-badge) ![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php) ![CodeIgniter](https://img.shields.io/badge/CodeIgniter-4.x-EF4223?style=for-the-badge&logo=codeigniter) ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql)",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "dev": "npx @tailwindcss/cli -i ./resources/css/input.css -o ./public/assets/css/style.css --watch",
+    "build": "npx @tailwindcss/cli -i ./resources/css/input.css -o ./public/assets/css/style.css --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Devangaa/kdmp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Devangaa/kdmp/issues"
+  },
+  "homepage": "https://github.com/Devangaa/kdmp#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "@tailwindcss/postcss": "^4.3.3",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^4.3.3"
+  }
+}

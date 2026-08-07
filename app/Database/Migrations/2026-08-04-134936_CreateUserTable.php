@@ -8,7 +8,6 @@ class CreateUsersTable extends Migration
 {
     public function up()
     {
-        // 1. Mendefinisikan Struktur Kolom Tabel
         $this->forge->addField([
             'id' => [
                 'type'       => 'VARCHAR',
@@ -46,16 +45,13 @@ class CreateUsersTable extends Migration
             ],
         ]);
 
-        // 2. Menentukan Primary Key
         $this->forge->addKey('id', true);
 
-        // 3. Menjalankan Perintah Eksekusi Buat Tabel
         $this->forge->createTable('users');
     }
 
     public function down()
     {
-        // Menghapus tabel jika dilakukan rollback
         $this->forge->dropTable('users');
     }
 }

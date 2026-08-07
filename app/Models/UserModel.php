@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use CodeIgniter\Model;
+use App\Models\BaseModel;
 use App\Entities\User;
 
 class UserModel extends BaseModel

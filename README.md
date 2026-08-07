@@ -1,4 +1,4 @@
-# 🚀 [Nama Proyek Kamu]
+# PENGELOLAAN KDMP
 
 <!-- BAGIAN 1: BADGE & WARNING STATUS DEVELOPMENT -->
 ![Status](https://img.shields.io/badge/Status-Work%20In%20Progress-orange?style=for-the-badge)
@@ -22,11 +22,29 @@ Aplikasi ini dibangun menggunakan **CodeIgniter 4** dengan menerapkan arsitektur
 ## 🚧 Progress Pengembangan (Roadmap / To-Do List)
 
 - [x] **Setup Proyek & Database:** Migration & Seeder dasar.
-- [ ] **Authentication:** Register & Login (JWT) + Hash Password via **Entity Mutator**.
-- [ ] **Manajemen Produk:** CRUD Katalog & Filter Kategori *(Sedang Dikerjakan)*.
-- [ ] **Pembayaran:** Integrasi Midtrans Payment Gateway *(Custom Service)*.
-- [ ] **Pelaporan:** Export PDF Laporan Transaksi.
-- [ ] **Testing:** Automated Unit Testing.
+- [x] **Authentication:** Login + Hash Password via **Entity Mutator**.
+- [ ] **Manajemen Katalog & Produk:**
+  - [ ] CRUD Kategori Produk.
+  - [ ] CRUD Produk (Nama, Harga Beli, Harga Jual, Foto, Kode Barcode/SKU).
+- [ ] **Manajemen Stok (Inventory Control):**
+  - [ ] Penyesuaian Stok Masuk (*Stock In/Restock*) dengan pencatatan riwayat (bukan edit variabel stok langsung).
+  - [ ] Log / Riwayat Perubahan Stok (Masuk, Keluar, Terjual via Kasir, & Penyesuaian/Rusak).
+- [ ] **Sistem Kasir / Point of Sale (POS):**
+  - [ ] Antarmuka Kasir (Pencarian produk, Scan Barcode, Keranjang/Cart).
+  - [ ] Ketersediaan Stok Real-time (Mencegah transaksi jika stok habis).
+  - [ ] Kategori Pembayaran (Tunai, QRIS, / Simpanan/Saldo Anggota Koperasi jika ada).
+  - [ ] Cetak Struk / Nota Transaksi (Thermal Printer / Print Friendly PDF).
+- [ ] **Manajemen Anggota (Fitur Khas Koperasi):**
+  - [ ] Data Anggota Koperasi (Diskon khusus / Poin / Pencatatan transaksi per anggota).
+- [ ] **Pelaporan & Analitik (Reporting):**
+  - [ ] Riwayat Transaksi Penjualan.
+  - [ ] Export PDF & Excel Laporan Transaksi / Penjualan Periodik.
+  - [ ] Export PDF Laporan Rekapitulasi Stok & Keuntungan.
+- [ ] **Hak Akses & Otorisasi (RBAC):**
+  - [ ] Pemisahan Akses (Admin: Full Access | Kasir: Hanya POS & Stok Masuk).
+- [ ] **Testing & Polish:**
+  - [ ] Automated Unit Testing.
+  - [ ] Refactoring & Bug Fixing.
 
 ---
 
@@ -34,8 +52,8 @@ Aplikasi ini dibangun menggunakan **CodeIgniter 4** dengan menerapkan arsitektur
 
 | Role | Hak Akses Fitur |
 | :--- | :--- |
-| **Admin** | Kelola Data User, Barang, Kategori, Anggota, serta Laporan Penjualan[cite: 2]. |
-| **Kasir** | Transaksi Penjualan (POS), Cek Stok Barang, dan Riwayat Transaksi[cite: 2]. |
+| **Admin** | Kelola Data User, Barang, Kategori, Anggota, serta Laporan Penjualan. |
+| **Kasir** | Transaksi Penjualan (POS), Cek Stok Barang, dan Riwayat Transaksi. |
 
 ---
 
@@ -66,7 +84,7 @@ composer install
 ### 3. Konfigurasi Environment (`.env`)
 Salin file template `.env.example` menjadi `.env`:
 ```bash
-cp .env.example .env
+cp env .env
 ```
 Buka file `.env` dan sesuaikan pengaturan database lokal kamu:
 ```ini
@@ -77,15 +95,23 @@ database.default.password =
 ```
 
 ### 4. Jalankan Database Migration & Seeder
+
 ```bash
 php spark migrate
-php spark db:seed DatabaseSeeder
+php spark db:seed MasterSeeder
 ```
 
-### 5. Jalankan Server Lokal
+### 5. Jalankan Development Server
+Terminal 1 (Backend):
 ```bash
 php spark serve
 ```
+
+Terminal 2 (Fronted):
+```bash
+npm run dev
+```
+
 Akses aplikasi melalui browser/Postman di: `http://localhost:8080`
 
 ---
@@ -106,4 +132,3 @@ Penjelasan singkat tentang bagaimana kodingan diatur di proyek ini:
 ## 👥 Tim & Kontribusi
 
 * **Pengembang:** [Devangaa] ([@Devangaa](https://github.com/Devangaa))
-* **Catatan Branch:** Pengembangan fitur baru wajib dilakukan di *branch* `develop` atau `feature/nama-fitur`.

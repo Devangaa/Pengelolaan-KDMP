@@ -1,0 +1,44 @@
+:root {
+    font-family: 'Inter', sans-serif;
+}
+
+::-ms-reveal,
+::-ms-clear {
+    display: none !important;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.custom-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, #b91c1c 50%), linear-gradient(135deg, #b91c1c 50%, transparent 50%);
+    background-position: calc(100% - 18px) calc(1.2em + 1px), calc(100% - 13px) calc(1.2em + 1px);
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+}
+
+.custom-select:focus {
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+/* Dropdown list item hover / active styling for custom dropdowns */
+[data-dropdown-list] li {
+    transition: background-color 120ms ease, color 120ms ease;
+}
+
+[data-dropdown-list] li:hover {
+    background-color: #fff1f2; /* red-50 */
+    color: #b91c1c; /* red-700 */
+}
+
+[data-dropdown-list] li[data-active="true"] {
+    background-color: #fee2e2; /* slightly stronger */
+    color: #991b1b;
+}
+
+/* make dropdown button show pointer */
+[data-dropdown] [data-dropdown-toggle] { cursor: pointer; }
