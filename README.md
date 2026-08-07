@@ -65,7 +65,7 @@ composer install
 ### 3. Konfigurasi Environment (`.env`)
 Salin file template `.env.example` menjadi `.env`:
 ```bash
-cp .env.example .env
+cp env .env
 ```
 Buka file `.env` dan sesuaikan pengaturan database lokal kamu:
 ```ini
@@ -76,15 +76,23 @@ database.default.password =
 ```
 
 ### 4. Jalankan Database Migration & Seeder
+
 ```bash
 php spark migrate
-php spark db:seed DatabaseSeeder
+php spark db:seed MasterSeeder
 ```
 
-### 5. Jalankan Server Lokal
+### 5. Jalankan Development Server
+Terminal 1 (Backend):
 ```bash
 php spark serve
 ```
+
+Terminal 2 (Fronted):
+```bash
+npm run dev
+```
+
 Akses aplikasi melalui browser/Postman di: `http://localhost:8080`
 
 ---
@@ -105,4 +113,3 @@ Penjelasan singkat tentang bagaimana kodingan diatur di proyek ini:
 ## 👥 Tim & Kontribusi
 
 * **Pengembang:** [Devangaa] ([@Devangaa](https://github.com/Devangaa))
-* **Catatan Branch:** Pengembangan fitur baru wajib dilakukan di *branch* `develop` atau `feature/nama-fitur`.
