@@ -18,7 +18,7 @@ class GuestController extends BaseController
 
     public function index()
     {
-        $featuredProducts = $this->productModel->getPopularProducts(8);
+        $featuredProducts = $this->productModel->getPopularProducts(10);
 
         $data = [
             'title'            => 'Beranda - Koperasi Desa Merah Putih',
@@ -36,14 +36,17 @@ class GuestController extends BaseController
         $search     = $this->request->getGet('q');
         $sort       = $this->request->getGet('sort') ?? 'popular';
 
+        $perPage = 20;
+
         $products = $this->productModel
             ->getFilteredProducts($categoryId, $search, $sort)
-            ->findAll(12);
+            ->paginate($perPage, 'products');
 
         $data = [
             'title'            => 'Katalog Produk - Koperasi Desa Merah Putih',
             'categories'       => $this->productCategoryModel->findAll(),
             'products'         => $products,
+            'pager'            => $this->productModel->pager,
             'selectedCategory' => $categoryId,
             'searchKeyword'    => $search,
             'selectedSort'     => $sort,
@@ -58,11 +61,21 @@ class GuestController extends BaseController
         $search     = $this->request->getGet('q');
         $sort       = $this->request->getGet('sort') ?? 'popular';
 
+        $perPage = 20;
+
         $products = $this->productModel
             ->getFilteredProducts($categoryId, $search, $sort)
-            ->findAll(12);
+            ->paginate($perPage, 'products');
 
-        return view('guest/partials/product_list', ['products' => $products]);
+        $pager = $this->productModel->pager;
+        $pager->only(['category', 'q', 'sort']);
+
+        $data = [
+            'products' => $products,
+            'pager'    => $this->productModel->pager 
+        ];
+
+        return view('guest/partials/product_list', $data);
     }
 
     public function about()

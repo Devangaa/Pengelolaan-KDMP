@@ -1,4 +1,4 @@
-    <header class="sticky top-0 z-50 border-b border-red-200 bg-white/95 backdrop-blur">
+    <header class="sticky top-0 z-50 relative border-b border-red-200 bg-white/95 backdrop-blur">
         <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
             <?php $uri = service('uri')->getPath(); $firstSegment = explode('/', trim($uri, '/'))[0] ?? ''; ?>
             <a href="<?= base_url('/') ?>" class="flex items-center gap-3">
@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <div class="border-t border-red-100 bg-white px-4 py-0 shadow-sm transition-all duration-300 ease-in-out md:hidden max-h-0 overflow-hidden" data-mobile-menu>
+        <div class="absolute top-full left-0 right-0 z-50 shadow-lg border-b border-red-100 bg-white px-4 py-0 shadow-sm transition-all duration-300 ease-in-out md:hidden max-h-0 overflow-hidden" data-mobile-menu>
             <nav class="flex flex-col gap-3 py-4 text-sm font-medium">
                 <a href="<?= base_url('/') ?>" class="rounded-lg px-3 py-2 transition <?= url_is('/') ? 'bg-red-50 text-red-600 font-semibold' : 'text-stone-700 hover:bg-red-50 hover:text-red-600' ?>">Beranda</a>
                 <a href="<?= base_url('products') ?>" class="rounded-lg px-3 py-2 transition <?= url_is('products*') ? 'bg-red-50 text-red-600 font-semibold' : 'text-stone-700 hover:bg-red-50 hover:text-red-600' ?>">Katalog</a>

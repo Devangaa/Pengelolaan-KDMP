@@ -18,6 +18,8 @@ class ProductModel extends BaseModel
         'sell_price',
         'stock',
         'unit',
+        'description',
+        'image',
     ];
 
     // Dates
@@ -35,6 +37,8 @@ class ProductModel extends BaseModel
         'sell_price' => 'required|integer|greater_than_equal_to[0]',
         'stock' => 'required|integer|greater_than_equal_to[0]',
         'unit' => 'required|max_length[20]',
+        'description' => 'permit_empty|max_length[255]',
+        'image' => 'permit_empty|is_image[image]|max_size[image,1024]|ext_in[image,png,jpg,jpeg,gif,webp]',
     ];
     protected $validationMessages   = [
         'name' => [
@@ -63,6 +67,14 @@ class ProductModel extends BaseModel
         'unit' => [
             'required' => 'Satuan wajib diisi.',
             'max_length' => 'Satuan maksimal 20 karakter.',
+        ],
+        'description' => [
+            'max_length' => 'Deskripsi maksimal 255 karakter.',
+        ],
+        'image' => [
+            'is_image' => 'File harus berupa gambar.',
+            'max_size' => 'Ukuran gambar maksimal 1MB.',
+            'ext_in' => 'Format gambar harus berupa PNG, JPG, JPEG, GIF, atau WEBP.',
         ],
     ];
 

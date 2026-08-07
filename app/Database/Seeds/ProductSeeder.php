@@ -14,6 +14,8 @@ class ProductSeeder extends Seeder
         $productModel = new ProductModel();
         $productCategoryModel = new ProductCategoryModel();
 
+        $productModel->protect(false);
+
         $categories = $productCategoryModel->getProductCategories();
         $categoryIds = array_column($categories, 'id');
 
@@ -27,6 +29,7 @@ class ProductSeeder extends Seeder
                 'sell_price'  => $faker->numberBetween(50000, 100000),
                 'stock'       => $faker->numberBetween(1, 100),
                 'unit'        => $faker->randomElement(['pcs', 'kg', 'liter']),
+                'description' => $faker->sentence(),
                 'created_at'  => $faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d H:i:s'),
                 'updated_at'  => $faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d H:i:s'),
             ];

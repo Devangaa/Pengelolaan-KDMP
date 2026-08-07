@@ -47,7 +47,7 @@
         </div>
 
         <div id="product-list" class="mt-8">
-            <?= view('guest/partials/product_list', ['products' => $featuredProducts]) ?>
+            <?= view('guest/partials/product_carousel', ['products' => $featuredProducts]) ?>
         </div>
     </div>
 </section>

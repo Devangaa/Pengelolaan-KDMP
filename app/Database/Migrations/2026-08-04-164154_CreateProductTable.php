@@ -41,6 +41,16 @@ class CreateProductsTable extends Migration
                 'type'       => 'VARCHAR',
                 'constraint' => 20,
             ],
+            'description' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255 ,
+                'null'       => true,
+            ],
+            'image' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 255,
+                'null'       => true,
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => false,

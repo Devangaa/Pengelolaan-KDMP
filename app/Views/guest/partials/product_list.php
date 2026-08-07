@@ -1,9 +1,10 @@
-<div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+<div class="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4 xl:grid-cols-5 xl:gap-6">
     <?php if (!empty($products) && is_array($products)): ?>
         <?php foreach ($products as $product): ?>
             <?php $isOutOfStock = ((int) ($product['stock'] ?? 0) <= 0); ?>
             <div class="flex h-full flex-col overflow-hidden rounded-2xl border shadow-sm transition hover:-translate-y-1 hover:shadow-md <?= $isOutOfStock ? 'border-stone-300 bg-stone-100' : 'border-red-100 bg-stone-50' ?>">
-                <div class="h-48 overflow-hidden bg-red-50">
+                
+                <div class="aspect-square w-full overflow-hidden bg-red-50">
                     <img
                         src="<?= !empty($product['image']) ? base_url('uploads/products/' . $product['image']) : base_url('assets/images/product-placeholder.webp') ?>"
                         alt="<?= esc($product['name'] ?? 'Produk koperasi') ?>"
@@ -11,32 +12,37 @@
                     >
                 </div>
 
-                <div class="flex flex-1 flex-col p-5">
-                    <div class="flex items-center justify-between gap-2">
-                        <span class="rounded-full px-2.5 py-1 text-xs font-semibold <?= $isOutOfStock ? 'bg-stone-200 text-stone-500' : 'bg-red-100 text-red-700' ?>">
+                <div class="flex flex-1 flex-col p-3.5 sm:p-5">
+                    <div class="flex items-center justify-between gap-1 sm:gap-2">
+                        <span class="truncate rounded-full px-2 py-0.5 text-[10px] font-semibold sm:px-2.5 sm:py-1 sm:text-xs <?= $isOutOfStock ? 'bg-stone-200 text-stone-500' : 'bg-red-100 text-red-700' ?>">
                             <?= esc($product['category_name'] ?? 'Umum') ?>
                         </span>
-                        <span class="text-xs font-medium <?= $isOutOfStock ? 'text-red-500 font-semibold' : 'text-stone-500' ?>">
-                            <?= ($product['stock'] ?? 0) <= 0 ? 'Stok Habis' : 'Stok ' . esc($product['stock']) ?>
+                        <span class="text-[10px] font-medium sm:text-xs <?= $isOutOfStock ? 'text-red-500 font-semibold' : 'text-stone-500' ?>">
+                            <?= ($product['stock'] ?? 0) <= 0 ? 'Habis' : 'Stok ' . esc($product['stock']) ?>
                         </span>
                     </div>
 
-                    <h3 class="mt-4 text-lg font-semibold <?= $isOutOfStock ? 'text-stone-500' : 'text-stone-900' ?>">
+                    <h3 class="mt-2 text-sm font-semibold line-clamp-1 sm:mt-4 sm:text-lg <?= $isOutOfStock ? 'text-stone-500' : 'text-stone-900' ?>">
                         <?= esc($product['name'] ?? 'Produk') ?>
                     </h3>
-                    <p class="mt-2 text-sm leading-6 <?= $isOutOfStock ? 'text-stone-400' : 'text-stone-600' ?>">
-                        <?= esc($product['description'] ?? 'Produk berkualitas dari koperasi desa.') ?>
-                    </p>
 
-                    <div class="mt-auto pt-5">
-                        <p class="text-lg font-semibold <?= $isOutOfStock ? 'text-stone-500' : 'text-red-600' ?>">Rp <?= number_format($product['sell_price'] ?? 0, 0, ',', '.') ?></p>
+                    <div class="mt-auto pt-3 sm:pt-5">
+                        <p class="text-sm font-semibold sm:text-lg <?= $isOutOfStock ? 'text-stone-500' : 'text-red-600' ?>">
+                            Rp <?= number_format($product['sell_price'] ?? 0, 0, ',', '.') ?>
+                        </p>
                     </div>
                 </div>
             </div>
         <?php endforeach; ?>
     <?php else: ?>
-        <div class="rounded-2xl border border-dashed border-red-200 bg-red-50 p-8 text-center text-sm text-stone-600 md:col-span-2 xl:col-span-4">
+        <div class="col-span-2 rounded-2xl border border-dashed border-red-200 bg-red-50 p-8 text-center text-sm text-stone-600 md:col-span-4 xl:col-span-5">
             Belum ada produk yang cocok untuk ditampilkan.
         </div>
     <?php endif; ?>
 </div>
+
+<?php if (isset($pager) && $pager->getPageCount('products') > 1): ?>
+    <div class="mt-10 flex justify-center">
+        <?= $pager->links('products', 'tailwind') ?>
+    </div>
+<?php endif; ?>
