@@ -1,3 +1,12 @@
+<?php
+$totalProducts = !empty($products) && is_array($products) ? count($products) : 0;
+
+if ($totalProducts > 0) {
+    $limit = min($totalProducts, 10);
+    $products = array_slice($products, 0, $limit);
+}
+?>
+
 <div class="swiper product-swiper relative">
     <div class="swiper-wrapper">
         <?php if (!empty($products) && is_array($products)): ?>

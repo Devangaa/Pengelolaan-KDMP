@@ -8,3 +8,11 @@ $routes->get('/products', 'GuestController::products');
 $routes->get('/products/filter', 'GuestController::filterProducts');
 $routes->get('/about', 'GuestController::about');
 
+$routes->group('', ['filter' => 'guest'], static function ($routes) {
+    $routes->get('login', 'AuthController::login');
+    $routes->post('login', 'AuthController::loginProcess');
+    $routes->get('forgot-password', 'AuthController::forgotPassword');
+});
+
+$routes->get('logout', 'AuthController::logout');
+

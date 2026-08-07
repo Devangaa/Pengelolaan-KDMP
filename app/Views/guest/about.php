@@ -63,7 +63,7 @@
     </div>
 </section>
 
-<section id="visi-misi" class="bg-stone-50 py-16">
+<section id="visi-misi" class="border-t border-red-100 bg-stone-50 py-16">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="grid gap-12 lg:grid-cols-2">
             <div class="rounded-3xl border border-stone-200 bg-white p-8 shadow-sm">
@@ -223,7 +223,7 @@
                     </div>
                     <div class="min-w-0 flex-1">
                         <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-red-700">Jam Operasional</p>
-                        <p class="text-sm sm:text-base font-semibold text-stone-900 leading-tight mt-0.5">Senin – Sabtu: 08.00 – 16.00 WIB</p>
+                        <p class="text-sm sm:text-base font-semibold text-stone-900 leading-tight mt-0.5">Senin – Sabtu: 08.00 – 17.00 WIB</p>
                         <p class="text-[11px] sm:text-xs text-stone-500 mt-0.5">Minggu & Hari Libur: <span class="font-medium text-red-600">Tutup</span></p>
                     </div>
                 </div>
@@ -239,8 +239,8 @@
                         </div>
                         <div class="min-w-0 flex-1">
                             <p class="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-stone-500">Alamat Toko</p>
-                            <p class="mt-0.5 text-sm sm:text-base font-semibold text-stone-900 leading-snug">Jl. Raya Merah Putih No. 123</p>
-                            <p class="text-xs text-stone-500 leading-tight mt-0.5">Desa Merah Putih, Kec. Makmur</p>
+                            <p class="mt-0.5 text-sm sm:text-base font-semibold text-stone-900 leading-snug">Jl. Merdeka No. 17</p>
+                            <p class="text-xs text-stone-500 leading-tight mt-0.5">Desa Makmur, Kec. Makmur</p>
                         </div>
                     </div>
                 </a>

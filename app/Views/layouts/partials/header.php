@@ -21,7 +21,7 @@
                     </svg>
                 </button>
 
-                <a href="<?= base_url('products') ?>" class="hidden rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 md:inline-flex">
+                <a href="<?= base_url('login') ?>" class="hidden rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700 md:inline-flex">
                     Masuk
                 </a>
             </div>
@@ -32,7 +32,7 @@
                 <a href="<?= base_url('/') ?>" class="rounded-lg px-3 py-2 transition <?= url_is('/') ? 'bg-red-50 text-red-600 font-semibold' : 'text-stone-700 hover:bg-red-50 hover:text-red-600' ?>">Beranda</a>
                 <a href="<?= base_url('products') ?>" class="rounded-lg px-3 py-2 transition <?= url_is('products*') ? 'bg-red-50 text-red-600 font-semibold' : 'text-stone-700 hover:bg-red-50 hover:text-red-600' ?>">Katalog</a>
                 <a href="<?= base_url('about') ?>" class="rounded-lg px-3 py-2 transition <?= url_is('about*') ? 'bg-red-50 text-red-600 font-semibold' : 'text-stone-700 hover:bg-red-50 hover:text-red-600' ?>">Tentang Kami</a>
-                <a href="<?= base_url('products') ?>" class="mt-2 inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700">
+                <a href="<?= base_url('login') ?>" class="mt-2 inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700">
                     Masuk
                 </a>
             </nav>

@@ -2,6 +2,11 @@
     font-family: 'Inter', sans-serif;
 }
 
+::-ms-reveal,
+::-ms-clear {
+    display: none !important;
+}
+
 body {
     font-family: 'Inter', sans-serif;
 }

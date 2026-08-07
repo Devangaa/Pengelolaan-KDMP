@@ -39,6 +39,33 @@ function initHomeCarousel() {
         return;
     }
 
+    function getCurrentCarouselSlidesPerView() {
+        const width = window.innerWidth;
+
+        if (width >= 1280) {
+            return 5;
+        }
+
+        if (width >= 1024) {
+            return 4;
+        }
+
+        if (width >= 640) {
+            return 3;
+        }
+
+        return 2;
+    }
+
+    const slidesWrapper = swiperElement.querySelector('.swiper-wrapper');
+    const slides = slidesWrapper ? Array.from(slidesWrapper.querySelectorAll('.swiper-slide')) : [];
+    const slidesPerView = getCurrentCarouselSlidesPerView();
+    const maxItems = 10;
+    const visibleCount = Math.floor(Math.min(slides.length, maxItems) / slidesPerView) * slidesPerView;
+    const limit = visibleCount > 0 ? visibleCount : slides.length;
+
+    slides.slice(limit).forEach((slide) => slide.remove());
+
     new Swiper(swiperElement, {
         slidesPerView: 2,
         slidesPerGroup: 2,
