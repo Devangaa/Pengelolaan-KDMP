@@ -23,7 +23,9 @@ Aplikasi ini dibangun menggunakan CodeIgniter 4 dengan menerapkan arsitektur Cle
 ## Progress Pengembangan (Roadmap)
 
 - [x] Setup Proyek dan Database: Migration & Seeder dasar.
-- [x] Authentication: Login + Hash Password via Entity Mutator.
+- [ ] Authentication
+  - [x] Login + Hash Password via Entity Mutator.
+  - [ ] Lupa Kata Sandi (Permintaan Reset via Email/Token & Update Password Baru).
 - [ ] Manajemen Katalog dan Produk
   - [ ] CRUD Kategori Produk.
   - [ ] CRUD Produk (Nama, Harga Beli, Harga Jual, Foto, Kode Barcode/SKU).
