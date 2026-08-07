@@ -22,10 +22,29 @@ Aplikasi ini dibangun menggunakan **CodeIgniter 4** dengan menerapkan arsitektur
 ## 🚧 Progress Pengembangan (Roadmap / To-Do List)
 
 - [x] **Setup Proyek & Database:** Migration & Seeder dasar.
-- [ ] **Authentication:** Register & Login (JWT) + Hash Password via **Entity Mutator**.
-- [ ] **Manajemen Produk:** CRUD Katalog & Filter Kategori.
-- [ ] **Pelaporan:** Export PDF Laporan Transaksi.
-- [ ] **Testing:** Automated Unit Testing.
+- [x] **Authentication:** Login + Hash Password via **Entity Mutator**.
+- [ ] **Manajemen Katalog & Produk:**
+  - [ ] CRUD Kategori Produk.
+  - [ ] CRUD Produk (Nama, Harga Beli, Harga Jual, Foto, Kode Barcode/SKU).
+- [ ] **Manajemen Stok (Inventory Control):**
+  - [ ] Penyesuaian Stok Masuk (*Stock In/Restock*) dengan pencatatan riwayat (bukan edit variabel stok langsung).
+  - [ ] Log / Riwayat Perubahan Stok (Masuk, Keluar, Terjual via Kasir, & Penyesuaian/Rusak).
+- [ ] **Sistem Kasir / Point of Sale (POS):**
+  - [ ] Antarmuka Kasir (Pencarian produk, Scan Barcode, Keranjang/Cart).
+  - [ ] Ketersediaan Stok Real-time (Mencegah transaksi jika stok habis).
+  - [ ] Kategori Pembayaran (Tunai, QRIS, / Simpanan/Saldo Anggota Koperasi jika ada).
+  - [ ] Cetak Struk / Nota Transaksi (Thermal Printer / Print Friendly PDF).
+- [ ] **Manajemen Anggota (Fitur Khas Koperasi):**
+  - [ ] Data Anggota Koperasi (Diskon khusus / Poin / Pencatatan transaksi per anggota).
+- [ ] **Pelaporan & Analitik (Reporting):**
+  - [ ] Riwayat Transaksi Penjualan.
+  - [ ] Export PDF & Excel Laporan Transaksi / Penjualan Periodik.
+  - [ ] Export PDF Laporan Rekapitulasi Stok & Keuntungan.
+- [ ] **Hak Akses & Otorisasi (RBAC):**
+  - [ ] Pemisahan Akses (Admin: Full Access | Kasir: Hanya POS & Stok Masuk).
+- [ ] **Testing & Polish:**
+  - [ ] Automated Unit Testing.
+  - [ ] Refactoring & Bug Fixing.
 
 ---
 
