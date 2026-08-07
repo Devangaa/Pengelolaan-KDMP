@@ -1,4 +1,4 @@
-# 🚀 PENGELOLAAN KDMP
+# PENGELOLAAN KDMP
 
 <!-- BAGIAN 1: BADGE & WARNING STATUS DEVELOPMENT -->
 ![Status](https://img.shields.io/badge/Status-Work%20In%20Progress-orange?style=for-the-badge)
@@ -33,8 +33,8 @@ Aplikasi ini dibangun menggunakan **CodeIgniter 4** dengan menerapkan arsitektur
 
 | Role | Hak Akses Fitur |
 | :--- | :--- |
-| **Admin** | Kelola Data User, Barang, Kategori, Anggota, serta Laporan Penjualan[cite: 2]. |
-| **Kasir** | Transaksi Penjualan (POS), Cek Stok Barang, dan Riwayat Transaksi[cite: 2]. |
+| **Admin** | Kelola Data User, Barang, Kategori, Anggota, serta Laporan Penjualan. |
+| **Kasir** | Transaksi Penjualan (POS), Cek Stok Barang, dan Riwayat Transaksi. |
 
 ---
 
