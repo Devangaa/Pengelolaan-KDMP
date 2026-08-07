@@ -53,8 +53,8 @@ Aplikasi ini dibangun menggunakan CodeIgniter 4 dengan menerapkan arsitektur Cle
 
 | Role | Hak Akses Fitur |
 | :--- | :--- |
-| Admin | Kelola Data User, Barang, Kategori, Anggota, serta Laporan Penjualan. |
-| Kasir | Transaksi Penjualan (POS), Cek Stok Barang, dan Riwayat Transaksi. |
+| **Admin** | Kelola Data User, Barang, Kategori, Anggota, serta Laporan Penjualan. |
+| **Kasir** | Transaksi Penjualan (POS), Cek Stok Barang, dan Riwayat Transaksi. |
 
 ---
 
