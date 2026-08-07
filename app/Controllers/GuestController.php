@@ -70,6 +70,8 @@ class GuestController extends BaseController
         $pager = $this->productModel->pager;
         $pager->only(['category', 'q', 'sort']);
 
+        $pager->setPath('products/filter');
+
         $data = [
             'products' => $products,
             'pager'    => $this->productModel->pager 

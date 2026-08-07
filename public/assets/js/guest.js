@@ -226,10 +226,19 @@ function initProductPage() {
         }
 
         event.preventDefault();
-        const pageUrl = paginationLink.getAttribute('href');
-        if (pageUrl && pageUrl !== '#') {
-            fetchProducts(pageUrl);
-        }
+        const href = paginationLink.getAttribute('href');
+        if (!href || href === '#') return;
+
+        const urlObj = new URL(href, window.location.origin);
+        const pageNum = urlObj.searchParams.get('page_products') || urlObj.searchParams.get('page') || 1;
+
+        const formData = new FormData(filterForm);
+        const params = new URLSearchParams(formData);
+        
+        params.set('page_products', pageNum);
+
+        const actionUrl = filterForm ? (filterForm.getAttribute('action') || '/products/filter') : '/products/filter';
+        fetchProducts(`${actionUrl}?${params.toString()}`);
     });
 }
 
