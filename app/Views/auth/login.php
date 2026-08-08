@@ -17,7 +17,7 @@
                         <img src="<?= base_url('assets/images/logo.webp') ?>" alt="Logo Koperasi" class="h-12 w-12 rounded-full object-cover">
                         <div>
                             <p class="text-sm font-semibold uppercase tracking-[0.25em] text-red-600">Koperasi Merah Putih</p>
-                            <p class="text-sm text-stone-500">Portal Anggota</p>
+                            <p class="text-sm text-stone-500">Portal Pengurus</p>
                         </div>
                     </div>
 

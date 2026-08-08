@@ -91,13 +91,20 @@
             <div class="mt-5 space-y-3">
                 <?php if (!empty($listStokMenipis)): ?>
                     <?php foreach ($listStokMenipis as $item): ?>
-                        <div class="rounded-3xl border border-stone-100 bg-stone-50 p-4">
+                        <?php $isHabis = ((int)$item['stok'] === 0); ?>
+                        <div class="rounded-3xl border p-4 transition <?= $isHabis ? 'border-red-200 bg-red-50' : 'border-stone-100 bg-stone-50' ?>">
                             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                 <div>
-                                    <p class="text-sm font-semibold text-stone-900"><?= esc($item['nama_produk']) ?></p>
-                                    <p class="text-xs text-stone-500"><?= esc($item['kategori']) ?></p>
+                                    <p class="text-sm font-semibold <?= $isHabis ? 'text-red-700' : 'text-stone-900' ?>">
+                                        <?= esc($item['nama_produk']) ?>
+                                    </p>
+                                    <p class="text-xs <?= $isHabis ? 'text-red-500' : 'text-stone-500' ?>">
+                                        <?= esc($item['kategori']) ?>
+                                    </p>
                                 </div>
-                                <div class="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-700">Stok: <?= esc($item['stok']) ?></div>
+                                <div class="rounded-full px-3 py-1 text-sm font-semibold <?= $isHabis ? 'bg-red-600 text-white' : 'bg-amber-100 text-amber-700' ?>">
+                                    Stok: <?= esc($item['stok']) ?> <?= $isHabis ? '(Habis)' : '' ?>
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
