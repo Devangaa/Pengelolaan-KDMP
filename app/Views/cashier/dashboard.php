@@ -7,7 +7,7 @@
     <section class="rounded-3xl border border-stone-200 bg-gradient-to-r from-white via-stone-50 to-white p-6 shadow-sm">
         <div class="grid gap-6 lg:grid-cols-[1.5fr_1fr] lg:items-center">
             <div>
-                <p class="text-sm font-semibold uppercase tracking-[0.24em] text-red-600">Status Kasir Saat Ini</p>
+                <p class="text-sm font-semibold uppercase tracking-[0.24em] text-red-600">Ringkasan Kasir</p>
                 <h1 class="mt-3 text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">Dashboard Kasir </h1>
                 <p class="mt-4 max-w-2xl text-stone-600">Pantau performa shift kasir dan akses cepat ke mesin kasir.</p>
             </div>
