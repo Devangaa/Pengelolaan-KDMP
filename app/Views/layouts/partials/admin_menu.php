@@ -10,7 +10,7 @@
 <div id="sidebar-backdrop" class="fixed inset-0 z-40 hidden bg-stone-900/50 lg:hidden"></div>
 
 <aside id="admin-sidebar" class="flex w-72 flex-col border-r border-stone-200 bg-white shadow-sm transition-all duration-300">
-    <div class="flex flex-1 flex-col overflow-hidden">
+    <div class="flex flex-1 flex-col overflow-hidden overflow-x-hidden">
         <div id="admin-sidebar-header" class="flex items-center gap-3 border-b border-stone-200 px-4 py-5">
             <div id="sidebar-logo" class="relative h-12 w-12 flex-shrink-0" role="button" aria-label="Toggle sidebar" tabindex="0">
                 <img src="<?= base_url('assets/images/logo.webp') ?>" alt="Logo KDMP" class="h-12 w-12 rounded-full object-cover transition-opacity duration-200 group-hover:opacity-0">
@@ -29,7 +29,7 @@
             </button>
         </div>
 
-        <nav id="admin-nav" class="flex-1 space-y-1 overflow-y-auto px-4 py-5">
+        <nav id="admin-nav" class="flex-1 space-y-1 overflow-y-auto overflow-x-hidden px-4 py-5">
             <a href="<?= base_url('dashboard') ?>" class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
                 <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">dashboard</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Dashboard</span>
@@ -46,6 +46,10 @@
                 <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">group</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Manajemen Anggota</span>
             </a>
+            <a href="<?= base_url('admin/cashiers') ?>" class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
+                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">account_circle</span>
+                <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Manajemen Kasir</span>
+            </a>
             <a href="<?= base_url('admin/reports') ?>" class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
                 <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">bar_chart</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Laporan</span>
@@ -55,8 +59,8 @@
 
     <div id="sidebar-profile" class="relative border-t border-stone-200 px-4 py-4">
         <button id="profile-trigger" type="button" class="flex w-full items-center gap-3 rounded-lg py-2 pl-1 pr-3 text-left transition hover:bg-red-50" aria-haspopup="true" aria-expanded="false" aria-controls="profile-menu">
-            <?php if (!empty($admin['avatar_url'])): ?>
-                <img src="<?= esc($admin['avatar_url']) ?>" alt="Foto profil" class="h-10 w-10 flex-shrink-0 rounded-full object-cover">
+            <?php if (!empty($admin['avatar'])): ?>
+                <img src="<?= base_url('uploads/avatar/admin/' . esc($admin['avatar'])) ?>" alt="Foto profil" class="h-10 w-10 max-w-none flex-shrink-0 rounded-full object-cover">
             <?php else: ?>
                 <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-stone-100 text-stone-500">
                     <span class="material-icons text-2xl">person</span>
@@ -66,7 +70,7 @@
                 <span class="truncate text-sm font-semibold text-stone-900"><?= esc($admin['name'] ?? 'Admin') ?></span>
                 <span class="truncate text-xs text-stone-500"><?= esc($admin['email'] ?? 'admin@kdmp.id') ?></span>
             </span>
-            <span class="material-icons profile-text flex-shrink-0 text-base text-stone-400">expand_more</span>
+            <span id="profile-chevron" class="material-icons profile-text flex-shrink-0 text-base text-stone-400 transition-transform duration-200">expand_more</span>
         </button>
 
         <div id="profile-menu" class="hidden overflow-hidden rounded-lg border border-stone-200 bg-white shadow-lg">

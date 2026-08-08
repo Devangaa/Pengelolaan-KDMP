@@ -17,7 +17,8 @@ class TransactionModel extends BaseModel
         'member_id',
         'total',
         'pay',
-        'change'
+        'change',
+        'payment_type'
     ];
 
     // Dates
@@ -35,6 +36,7 @@ class TransactionModel extends BaseModel
         'total'          => 'required|integer|greater_than_equal_to[0]',
         'pay'            => 'required|integer|greater_than_equal_to[0]',
         'change'         => 'required|integer|greater_than_equal_to[0]',
+        'payment_type'   => 'required|in_list[payment_type,tunai,nontunai]',
     ];
     protected $validationMessages   = [
         'transaction_id' => [
@@ -66,5 +68,85 @@ class TransactionModel extends BaseModel
             'integer' => 'Kembalian harus berupa angka.',
             'greater_than_equal_to' => 'Kembalian harus lebih besar atau sama dengan 0.',
         ],
+        'payment_type' => [
+            'required' => 'Tipe pembayaran wajib diisi.',
+            'in_list' => 'Tipe pembayaran harus bernilai tunai atau nontunai.',
+        ],
     ];
+
+    public function getDailyTotal(string $date, ?string $userId = null): int
+    {
+        $builder = $this->builder()
+            ->select('IFNULL(SUM(total), 0) as total')
+            ->where('DATE(transactions.created_at)', $date);
+
+        if ($userId) {
+            $builder->where('user_id', $userId);
+        }
+
+        $row = $builder->get()->getRowArray();
+        return isset($row['total']) ? (int) $row['total'] : 0;
+    }
+
+    public function getDailyCount(string $date, ?string $userId = null): int
+    {
+        $builder = $this->builder()->where('DATE(transactions.created_at)', $date);
+
+        if ($userId) {
+            $builder->where('user_id', $userId);
+        }
+
+        return (int) $builder->countAllResults(false);
+    }
+
+    public function getDailyTotalByPaymentType(string $date, string $paymentType, ?string $userId = null): int
+    {
+        $builder = $this->builder()
+            ->select('IFNULL(SUM(total), 0) as total')
+            ->where('DATE(created_at)', $date)
+            ->where('payment_type', $paymentType);
+
+        if ($userId) {
+            $builder->where('user_id', $userId);
+        }
+
+        $row = $builder->get()->getRowArray();
+        return isset($row['total']) ? (int) $row['total'] : 0;
+    }
+
+    public function getTodayTransactionsWithCashier(string $date, int $limit = 8)
+    {
+        return $this->builder()
+            ->select('transactions.transaction_id as no_struk, users.name as nama_kasir, transactions.total as total_harga, transactions.created_at')
+            ->join('users', 'users.id = transactions.user_id', 'left')
+            ->where('DATE(transactions.created_at)', $date)
+            ->orderBy('transactions.created_at', 'DESC')
+            ->limit($limit)
+            ->get()
+            ->getResultArray();
+    }
+
+    public function getTodayTransactionsByUser(string $userId, string $date, int $limit = 10)
+    {
+        return $this->builder()
+            ->select('transaction_id as no_struk, total, pay, `change`, transactions.created_at, payment_type')
+            ->where('user_id', $userId)
+            ->where('DATE(transactions.created_at)', $date)
+            ->orderBy('transactions.created_at', 'DESC')
+            ->limit($limit)
+            ->get()
+            ->getResultArray();
+    }
+
+    public function getFirstTransactionTimeByUser(string $userId, string $date): ?string
+    {
+        $row = $this->builder()
+            ->select('MIN(transactions.created_at) as start_time')
+            ->where('user_id', $userId)
+            ->where('DATE(transactions.created_at)', $date)
+            ->get()
+            ->getRowArray();
+
+        return !empty($row['start_time']) ? $row['start_time'] : null;
+    }
 }

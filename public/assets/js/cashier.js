@@ -1,17 +1,17 @@
 document.documentElement.classList.add('js-enabled');
 
 document.addEventListener('DOMContentLoaded', function () {
-    const sidebar = document.getElementById('admin-sidebar');
-    const toggle = document.getElementById('sidebar-toggle');
-    const logo = document.getElementById('sidebar-logo');
-    const logoIcon = document.getElementById('sidebar-logo-icon');
-    const mobileToggle = document.getElementById('sidebar-mobile-toggle');
-    const mobileClose = document.getElementById('sidebar-mobile-close');
-    const backdrop = document.getElementById('sidebar-backdrop');
-    const profileWrap = document.getElementById('sidebar-profile');
-    const profileTrigger = document.getElementById('profile-trigger');
-    const profileMenu = document.getElementById('profile-menu');
-    const profileChevron = document.getElementById('profile-chevron');
+    const sidebar = document.getElementById('cashier-sidebar');
+    const toggle = document.getElementById('cashier-sidebar-toggle');
+    const logo = document.getElementById('cashier-sidebar-logo');
+    const logoIcon = document.getElementById('cashier-sidebar-logo-icon');
+    const mobileToggle = document.getElementById('cashier-sidebar-mobile-toggle');
+    const mobileClose = document.getElementById('cashier-sidebar-mobile-close');
+    const backdrop = document.getElementById('cashier-sidebar-backdrop');
+    const profileWrap = document.getElementById('cashier-sidebar-profile');
+    const profileTrigger = document.getElementById('cashier-profile-trigger');
+    const profileMenu = document.getElementById('cashier-profile-menu');
+    const profileChevron = document.getElementById('cashier-profile-chevron');
 
     if (!sidebar || !toggle || !logo || !logoIcon) {
         return;
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         try {
-            localStorage.setItem('kdmp-admin-sidebar-collapsed', isCollapsed ? '1' : '0');
+            localStorage.setItem('kdmp-cashier-sidebar-collapsed', isCollapsed ? '1' : '0');
         } catch (error) {
             // Ignore storage errors in private mode.
         }
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function initSidebarState() {
         let collapsed = false;
         try {
-            collapsed = localStorage.getItem('kdmp-admin-sidebar-collapsed') === '1';
+            collapsed = localStorage.getItem('kdmp-cashier-sidebar-collapsed') === '1';
         } catch (error) {
             collapsed = false;
         }

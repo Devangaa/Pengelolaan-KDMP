@@ -79,6 +79,7 @@ class TransactionSeeder extends Seeder
             }
             $change = $pay - $grandTotal;
 
+            $paymentType = $change > 0 ? 'tunai' : 'nontunai';
             $transactionData = [
                 'transaction_id' => $invoiceNumber,
                 'user_id'        => $faker->randomElement($userIds),
@@ -86,6 +87,7 @@ class TransactionSeeder extends Seeder
                 'total'          => $grandTotal,
                 'pay'            => $pay,
                 'change'         => $change,
+                'payment_type'   => $paymentType,
                 'created_at'     => $fullDateTime,
                 'updated_at'     => $fullDateTime,
             ];

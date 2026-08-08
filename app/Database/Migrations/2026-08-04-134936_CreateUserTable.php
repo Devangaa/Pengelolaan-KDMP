@@ -31,6 +31,11 @@ class CreateUsersTable extends Migration
                 'constraint' => ['admin', 'kasir'],
                 'default'    => 'kasir',
             ],
+            'avatar' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '255',
+                'null'       => true,
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => false,

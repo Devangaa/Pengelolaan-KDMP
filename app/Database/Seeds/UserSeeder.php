@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
             'email' => 'budi.santoso@gmail.com',
             'password' => 'password123',
             'role' => 'admin',
+            'avatar' => null,
         ]);
 
         $kasir = new User([
@@ -24,6 +25,7 @@ class UserSeeder extends Seeder
             'email' => 'siti.aminah@gmail.com',
             'password' => 'password123',
             'role' => 'kasir',
+            'avatar' => null,
         ]);
 
         $userModel->save($admin);

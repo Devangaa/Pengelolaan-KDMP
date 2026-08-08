@@ -11,7 +11,7 @@
                 <h1 class="mt-3 text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">Dashboard Koperasi KDMP</h1>
                 <p class="mt-4 max-w-2xl text-stone-600">Semua performa penting dan peringatan operasional ditampilkan di sini, agar keputusan bisa diambil lebih cepat.</p>
             </div>
-            <div class="flex flex-wrap items-center justify-end gap-3">
+            <div class="flex flex-wrap items-center justify-start gap-3 lg:justify-end">
                 <a href="<?= base_url('produk/tambah') ?>" class="inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-red-200 transition hover:bg-red-700">
                     <span class="material-icons">add</span>
                     <span>Tambah Produk</span>
@@ -80,7 +80,7 @@
     </div>
 
     <div class="grid gap-4 xl:grid-cols-2">
-        <section class="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
+        <section class="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm h-[28rem] overflow-hidden">
             <div class="flex items-center justify-between gap-3 border-b border-stone-100 pb-4">
                 <div>
                     <h2 class="text-lg font-semibold text-stone-900">Peringatan Stok Menipis</h2>
@@ -88,7 +88,7 @@
                 </div>
                 <a href="<?= base_url('stok') ?>" class="text-sm font-semibold text-red-600 transition hover:text-red-700">Lihat Semua</a>
             </div>
-            <div class="mt-5 space-y-3">
+            <div class="mt-5 h-[22rem] overflow-y-auto pr-1 space-y-3">
                 <?php if (!empty($listStokMenipis)): ?>
                     <?php foreach ($listStokMenipis as $item): ?>
                         <?php $isHabis = ((int)$item['stok'] === 0); ?>
@@ -114,7 +114,7 @@
             </div>
         </section>
 
-        <section class="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
+        <section class="flex h-[28rem] flex-col rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
             <div class="flex items-center justify-between gap-3 border-b border-stone-100 pb-4">
                 <div>
                     <h2 class="text-lg font-semibold text-stone-900">Transaksi Terbaru</h2>
@@ -122,7 +122,8 @@
                 </div>
                 <a href="<?= base_url('laporan') ?>" class="text-sm font-semibold text-stone-600 transition hover:text-stone-900">Lihat Laporan</a>
             </div>
-            <div class="mt-5 space-y-3">
+
+            <div class="mt-4 flex-1 space-y-3 overflow-y-auto pr-1">
                 <?php if (!empty($transaksiTerbaru)): ?>
                     <?php foreach ($transaksiTerbaru as $trx): ?>
                         <div class="rounded-3xl border border-stone-100 bg-stone-50 p-4">

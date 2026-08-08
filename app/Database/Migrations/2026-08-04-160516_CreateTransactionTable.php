@@ -42,6 +42,12 @@ class CreateTransactionsTable extends Migration
                 'constraint' => 20,
                 'unsigned'   => true,
             ],
+            'payment_type' => [
+                'type'       => 'ENUM',
+                'constraint' => ['tunai', 'nontunai'],
+                'default'    => 'tunai',
+                'null'       => false,
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => false,

@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use CodeIgniter\HTTP\ResponseInterface;
 
 class DashboardController extends BaseController
 {
@@ -29,35 +28,37 @@ class DashboardController extends BaseController
         $productModel = new \App\Models\ProductModel();
         $transactionModel = new \App\Models\TransactionModel();
         $memberModel = new \App\Models\MemberModel();
+        $userModel = new \App\Models\UserModel();
+
+        $session = session();
+        $admin = [];
+        $userId = $session->get('id');
+        if ($userId) {
+            $user = $userModel->find($userId);
+            if ($user) {
+                $admin = [
+                    'name' => $user->name ?? $session->get('name'),
+                    'email' => $user->email ?? $session->get('email'),
+                    'avatar' => $user->avatar ?? null,
+                ];
+            }
+        }
+        if (empty($admin)) {
+            $admin = [
+                'name' => $session->get('name'),
+                'email' => $session->get('email'),
+                'avatar' => null,
+            ];
+        }
 
         $today = date('Y-m-d');
 
-        // Total sales today
-        $row = $transactionModel->select('IFNULL(SUM(total), 0) as total')->where('DATE(created_at)', $today)->first();
-        $penjualanHariIni = isset($row['total']) ? (int) $row['total'] : 0;
-
-        // Total transactions today
-        $totalTransaksiHariIni = $transactionModel->where('DATE(created_at)', $today)->countAllResults();
-
-        // Products running low (threshold: 5)
-        $stokMenipisList = $productModel
-            ->select('products.id, products.name as nama_produk, product_categories.name as kategori, products.stock as stok')
-            ->join('product_categories', 'product_categories.id = products.category_id', 'left')
-            ->where('products.stock <', 5)
-            ->orderBy('products.stock', 'ASC')
-            ->findAll(10);
-        $stokMenipisCount = is_array($stokMenipisList) ? count($stokMenipisList) : 0;
-
-        // Total members
-        $totalAnggota = $memberModel->where('deleted_at', null)->countAllResults();
-
-        // Recent transactions today
-        $transaksiTerbaru = $transactionModel
-            ->select('transactions.transaction_id as no_struk, users.name as nama_kasir, transactions.total as total_harga, transactions.created_at')
-            ->join('users', 'users.id = transactions.user_id', 'left')
-            ->where('DATE(transactions.created_at)', $today)
-            ->orderBy('transactions.created_at', 'DESC')
-            ->findAll(8);
+        $penjualanHariIni = $transactionModel->getDailyTotal($today);
+        $totalTransaksiHariIni = $transactionModel->getDailyCount($today);
+        $stokMenipisList = $productModel->getLowStockProducts();
+        $stokMenipisCount = count($stokMenipisList);
+        $totalAnggota = $memberModel->countActiveMembers();
+        $transaksiTerbaru = $transactionModel->getTodayTransactionsWithCashier($today, 8);
 
         $data = [
             'penjualanHariIni' => $penjualanHariIni,
@@ -66,6 +67,7 @@ class DashboardController extends BaseController
             'listStokMenipis' => $stokMenipisList,
             'totalAnggota' => $totalAnggota,
             'transaksiTerbaru' => $transaksiTerbaru,
+                'admin' => $admin,
         ];
 
         return view('admin/dashboard', $data);
@@ -73,10 +75,55 @@ class DashboardController extends BaseController
 
     private function kasirDashboard()
     {
-        $data = [
-            'transaksiSayaHariIni' => 0,
-        ];
+        $transactionModel = new \App\Models\TransactionModel();
+        $shiftModel = new \App\Models\CashierShiftModel();
+        $userModel = new \App\Models\UserModel();
+        $session = session();
+        $cashier = [];
+        $userId = $session->get('id');
+    
+        if ($userId) {
+            $user = $userModel->find($userId);
+            if ($user) {
+                $cashier = [
+                    'name' => $user->name ?? $session->get('name'),
+                    'email' => $user->email ?? $session->get('email'),
+                    'avatar' => $user->avatar ?? null,
+                ];
+            }
+        }
+    
+        if (empty($cashier)) {
+            $cashier = [
+                'name' => $session->get('name'),
+                'email' => $session->get('email'),
+                'avatar' => null,
+            ];
+        }
+    
+        $today = date('Y-m-d');
 
+        $totalOmset = $transactionModel->getDailyTotal($today, $userId);
+        $cashTotal = $transactionModel->getDailyTotalByPaymentType($today, 'tunai', $userId);
+        $nonCashTotal = $transactionModel->getDailyTotalByPaymentType($today, 'nontunai', $userId);
+
+        $transaksiSayaHariIni = $transactionModel->getDailyCount($today, $userId);
+        $transactionsToday = $transactionModel->getTodayTransactionsByUser($userId, $today, 10);
+
+        $shiftData = $shiftModel->getCurrentShiftDataByUser($userId);
+
+        $data = [
+            'cashier' => $cashier,
+            'shiftActive' => $shiftData['shiftActive'],
+            'shiftStartedAt' => $shiftData['shiftStartedAt'],
+            'openingBalance' => $shiftData['openingBalance'],
+            'totalOmset' => $totalOmset,
+            'receiptCount' => $transaksiSayaHariIni,
+            'cashTotal' => $cashTotal,
+            'nonCashTotal' => $nonCashTotal,
+            'transactionsToday' => $transactionsToday,
+        ];
+    
         return view('cashier/dashboard', $data);
     }
 }
