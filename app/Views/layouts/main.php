@@ -15,6 +15,7 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="<?= base_url('assets/js/guest.js') ?>"></script>
+    <script src="<?= base_url('assets/js/features/product-list.js') ?>"></script>
 </head>
 <body class="min-h-screen bg-stone-50 text-stone-800 antialiased">
     <?= $this->include('layouts/partials/header'); ?>

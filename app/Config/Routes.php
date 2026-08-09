@@ -5,17 +5,22 @@ use CodeIgniter\Router\RouteCollection;
 /** @var RouteCollection $routes */
 $routes->group('', ['filter' => 'guest'], static function ($routes) {
     $routes->get('/', 'GuestController::index');
-    $routes->get('/products', 'GuestController::products');
-    $routes->get('/products/filter', 'GuestController::filterProducts');
-    $routes->get('/about', 'GuestController::about');
+    $routes->get('/produk', 'GuestController::products');
+    $routes->get('/produk/saring', 'GuestController::filterProducts');
+    $routes->get('/tentang-kami', 'GuestController::about');
     
     $routes->get('login', 'AuthController::login');
     $routes->post('login', 'AuthController::loginProcess');
-    $routes->get('forgot-password', 'AuthController::forgotPassword');
+    $routes->get('/lupa-kata-sandi', 'AuthController::forgotPassword');
 });
 
 $routes->get('logout', 'AuthController::logout');
 
 $routes->group('', ['filter' => 'role'], static function ($routes) {
-    $routes->get('dashboard', 'DashboardController::index');
+    $routes->get('dasbor', 'DashboardController::index');
+});
+
+$routes->group('', ['filter' => 'role:kasir'], static function ($routes) {
+    $routes->get('katalog', 'Cashier\ProductCatalogController::index');
+    $routes->get('katalog/saring', 'Cashier\ProductCatalogController::filterProducts');
 });

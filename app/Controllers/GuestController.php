@@ -73,11 +73,15 @@ class GuestController extends BaseController
         $pager->setPath('products/filter');
 
         $data = [
-            'products' => $products,
-            'pager'    => $this->productModel->pager 
+            'products'         => $products,
+            'pager'            => $pager,
+            'categories'       => $this->productCategoryModel->findAll(),
+            'selectedCategory' => $categoryId,
+            'searchKeyword'    => $search,
+            'selectedSort'     => $sort,
         ];
 
-        return view('guest/partials/product_list', $data);
+        return view('partials/product_list', $data);
     }
 
     public function about()

@@ -1,84 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="utf-8">
-    <title><?= lang('Errors.badRequest') ?></title>
-
-    <style>
-        div.logo {
-            height: 200px;
-            width: 155px;
-            display: inline-block;
-            opacity: 0.08;
-            position: absolute;
-            top: 2rem;
-            left: 50%;
-            margin-left: -73px;
-        }
-        body {
-            height: 100%;
-            background: #fafafa;
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            color: #777;
-            font-weight: 300;
-        }
-        h1 {
-            font-weight: lighter;
-            letter-spacing: normal;
-            font-size: 3rem;
-            margin-top: 0;
-            margin-bottom: 0;
-            color: #222;
-        }
-        .wrap {
-            max-width: 1024px;
-            margin: 5rem auto;
-            padding: 2rem;
-            background: #fff;
-            text-align: center;
-            border: 1px solid #efefef;
-            border-radius: 0.5rem;
-            position: relative;
-        }
-        pre {
-            white-space: normal;
-            margin-top: 1.5rem;
-        }
-        code {
-            background: #fafafa;
-            border: 1px solid #efefef;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            display: block;
-        }
-        p {
-            margin-top: 1.5rem;
-        }
-        .footer {
-            margin-top: 2rem;
-            border-top: 1px solid #efefef;
-            padding: 1em 2em 0 2em;
-            font-size: 85%;
-            color: #999;
-        }
-        a:active,
-        a:link,
-        a:visited {
-            color: #dd4814;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>400 - Permintaan Tidak Valid</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<div class="wrap">
-    <h1>400</h1>
+<body class="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(239,68,68,0.12),_transparent_35%),linear-gradient(135deg,_#fff7f7_0%,_#ffffff_100%)] text-stone-900">
+    <main class="mx-auto flex min-h-screen w-full items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
+        <section class="w-full max-w-xl rounded-[32px] border border-red-100 bg-white/95 p-6 shadow-[0_30px_80px_-40px_rgba(15,23,42,0.18)] sm:p-10">
+            <div class="space-y-5 text-center">
+                <h1 class="text-5xl font-semibold tracking-tight text-stone-950 sm:text-6xl">400</h1>
+                <p class="mx-auto max-w-xl text-base leading-7 text-stone-600 sm:text-lg">
+                    <?php if (ENVIRONMENT !== 'production') : ?>
+                        <?= nl2br(esc($message)) ?>
+                    <?php else : ?>
+                        <?= lang('Errors.sorryBadRequest') ?>
+                    <?php endif; ?>
+                </p>
+            </div>
 
-    <p>
-        <?php if (ENVIRONMENT !== 'production') : ?>
-            <?= nl2br(esc($message)) ?>
-        <?php else : ?>
-            <?= lang('Errors.sorryBadRequest') ?>
-        <?php endif; ?>
-    </p>
-</div>
+            <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                <a href="<?= base_url('/') ?>" class="inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-red-600/20 transition hover:bg-red-700">
+                    Kembali ke Beranda
+                </a>
+                <a href="javascript:history.back()" class="inline-flex items-center justify-center rounded-full border border-red-200 bg-white px-6 py-3 text-sm font-semibold text-stone-700 transition hover:border-red-300 hover:bg-red-50">
+                    Kembali sebelumnya
+                </a>
+            </div>
+
+            <?php if (ENVIRONMENT !== 'production' && ! empty($message)) : ?>
+                <div class="mt-10 rounded-3xl border border-red-100 bg-red-50 p-5 text-sm text-stone-700">
+                    <p class="font-semibold text-stone-900">Detail kesalahan</p>
+                    <pre class="mt-3 overflow-x-auto rounded-2xl bg-white p-4 text-[0.95rem] leading-6 text-stone-700"> <?= nl2br(esc($message)) ?></pre>
+                </div>
+            <?php endif; ?>
+        </section>
+    </main>
 </body>
 </html>

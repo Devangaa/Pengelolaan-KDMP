@@ -108,3 +108,13 @@
         display: none !important;
     }
 }
+
+/* Ensure profile menu can overflow the collapsed sidebar (prevent clipping) */
+.kdmp-sidebar-collapsed #cashier-sidebar,
+.kdmp-sidebar-collapsed #cashier-sidebar > .flex {
+    overflow: visible !important;
+}
+
+.kdmp-sidebar-collapsed #cashier-sidebar #cashier-profile-menu {
+    z-index: 60 !important;
+}

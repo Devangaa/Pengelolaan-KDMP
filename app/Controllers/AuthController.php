@@ -60,12 +60,16 @@ class AuthController extends BaseController
 
         session()->set($sessionData);
 
-        return redirect()->to('/dashboard')->with('success', 'Selamat datang kembali, ' . $user->name . '!');
+        return redirect()->to('/dasbor')->with('success', 'Selamat datang kembali, ' . $user->name . '!');
     }
 
     public function logout()
     {
-        session()->destroy();
-        return redirect()->to('/login')->with('success', 'Anda telah berhasil keluar dari sistem.');
+        $session = session();
+        $session->remove(['id', 'name', 'email', 'role', 'isLoggedIn']);
+        $session->regenerate(true);
+        $session->setFlashdata('success', 'Anda telah berhasil keluar dari sistem.');
+
+        return redirect()->to('/login');
     }
 }

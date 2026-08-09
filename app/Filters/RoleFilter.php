@@ -17,7 +17,7 @@ class RoleFilter implements FilterInterface
         $userRole = session()->get('role');
 
         if ($arguments && !in_array($userRole, $arguments)) {
-            return redirect()->to('/dashboard')->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
+            return redirect()->to('/dasbor')->with('error', 'Anda tidak memiliki akses ke halaman tersebut.');
         }
     }
     

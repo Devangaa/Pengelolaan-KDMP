@@ -13,7 +13,7 @@
             </p>
 
             <div class="mt-8 flex flex-wrap gap-3">
-                <a href="<?= base_url('products') ?>" class="rounded-lg bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700">
+                <a href="<?= base_url('produk') ?>" class="rounded-lg bg-red-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-red-700">
                     Lihat Katalog Produk
                 </a>
                 <a href="#produk-unggulan" class="rounded-lg border border-red-200 bg-white px-6 py-3 text-sm font-semibold text-red-700 transition hover:border-red-300 hover:bg-red-50">
@@ -41,7 +41,7 @@
                 </p>
             </div>
 
-            <a href="<?= base_url('products') ?>" class="inline-flex w-fit items-center justify-center self-start rounded-full border border-red-200 bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 sm:self-auto">
+            <a href="<?= base_url('produk') ?>" class="inline-flex w-fit items-center justify-center self-start rounded-full border border-red-200 bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700 sm:self-auto">
                 Lihat Semua
             </a>
         </div>

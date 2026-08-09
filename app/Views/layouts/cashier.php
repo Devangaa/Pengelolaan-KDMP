@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="<?= base_url('assets/css/cashier-custom.css') ?>">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="<?= base_url('assets/js/features/product-list.js') ?>"></script>
     <script src="<?= base_url('assets/js/cashier.js') ?>"></script>
 </head>
 <body class="h-screen overflow-hidden bg-stone-100 text-stone-800 antialiased" style="font-family: 'Inter', sans-serif;">
