@@ -30,28 +30,28 @@
         </div>
 
         <nav id="admin-nav" class="flex-1 space-y-1 overflow-y-auto overflow-x-hidden px-4 py-5">
-            <a href="<?= base_url('dasbor') ?>" class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
-                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">dashboard</span>
+            <a href="<?= base_url('dasbor') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
+                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110">dashboard</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Dashboard</span>
             </a>
-            <a href="<?= base_url('admin/products') ?>" class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
-                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">inventory_2</span>
+            <a href="<?= base_url('admin/products') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
+                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110">inventory_2</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Manajemen Produk</span>
             </a>
-            <a href="<?= base_url('admin/stocks') ?>" class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
-                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">warehouse</span>
+            <a href="<?= base_url('admin/stocks') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
+                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110">warehouse</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Manajemen Stok</span>
             </a>
-            <a href="<?= base_url('admin/members') ?>" class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
-                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">group</span>
+            <a href="<?= base_url('admin/members') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
+                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110">group</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Manajemen Anggota</span>
             </a>
-            <a href="<?= base_url('admin/cashiers') ?>" class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
-                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">account_circle</span>
+            <a href="<?= base_url('admin/cashiers') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
+                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110">account_circle</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Manajemen Kasir</span>
             </a>
-            <a href="<?= base_url('admin/reports') ?>" class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
-                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">bar_chart</span>
+            <a href="<?= base_url('admin/reports') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
+                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110">bar_chart</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Laporan</span>
             </a>
         </nav>

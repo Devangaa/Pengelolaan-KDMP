@@ -30,28 +30,28 @@
         </div>
 
         <nav id="cashier-nav" class="flex-1 space-y-1 overflow-y-auto overflow-x-hidden px-4 py-5">
-            <a href="<?= base_url('dasbor') ?>" class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
-                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">dashboard</span>
+            <a href="<?= base_url('dasbor') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
+                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110">dashboard</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Dashboard</span>
             </a>
-            <a href="<?= base_url('katalog') ?>" class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
-                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">inventory</span>
+            <a href="<?= base_url('katalog') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
+                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110">inventory</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Katalog Produk</span>
             </a>
-            <a href="<?= base_url('cashier/reports') ?>" class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
-                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">description</span>
+            <a href="<?= base_url('cashier/reports') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
+                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110">description</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Riwayat Transaksi</span>
             </a>
-            <a href="<?= base_url('cashier/rekap_shift') ?>" class="sidebar-link flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
-                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">query_stats</span>
+            <a href="<?= base_url('cashier/rekap_shift') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
+                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110">query_stats</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Rekap Shift</span>
             </a>
         </nav>
     </div>
 
     <div id="cashier-pos-section" class="border-t border-stone-200 px-4 py-4">
-        <a href="<?= base_url('cashier/pos') ?>" class="sidebar-link flex items-center gap-3 rounded-lg bg-red-600 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-red-700">
-            <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base">point_of_sale</span>
+        <a href="<?= base_url('cashier/pos') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg bg-red-600 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-red-700">
+            <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110">point_of_sale</span>
             <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Transaksi</span>
         </a>
     </div>
