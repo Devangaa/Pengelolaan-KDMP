@@ -15,17 +15,14 @@
                     <?php if (ENVIRONMENT !== 'production') : ?>
                         <?= nl2br(esc($message)) ?>
                     <?php else : ?>
-                        <?= lang('Errors.sorryCannotFind') ?>
+                        Maaf, halaman atau fitur yang kamu cari tidak ditemukan.
                     <?php endif; ?>
                 </p>
             </div>
 
             <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <a href="<?= base_url('/') ?>" class="inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-red-600/20 transition hover:bg-red-700">
-                    Kembali ke Beranda
-                </a>
-                <a href="javascript:history.back()" class="inline-flex items-center justify-center rounded-full border border-red-200 bg-white px-6 py-3 text-sm font-semibold text-stone-700 transition hover:border-red-300 hover:bg-red-50">
-                    Kembali sebelumnya
+                <a href="javascript:history.back()" class="inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-red-600/20 transition hover:bg-red-700">
+                    Kembali
                 </a>
             </div>
 
