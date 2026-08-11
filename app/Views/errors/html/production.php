@@ -1,25 +1,26 @@
 <!doctype html>
-<html>
+<html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex">
-
-    <title><?= lang('Errors.whoops') ?></title>
-
-    <style>
-        <?= preg_replace('#[\r\n\t ]+#', ' ', file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'debug.css')) ?>
-    </style>
+    <title>Terjadi Kesalahan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(239,68,68,0.12),_transparent_35%),linear-gradient(135deg,_#fff7f7_0%,_#ffffff_100%)] text-stone-900">
+    <main class="mx-auto flex min-h-screen w-full items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
+        <section class="w-full max-w-xl rounded-[32px] border border-red-100 bg-white/95 p-6 shadow-[0_30px_80px_-40px_rgba(15,23,42,0.18)] sm:p-10">
+            <div class="space-y-5 text-center">
+                <h1 class="text-5xl font-semibold tracking-tight text-stone-950 sm:text-6xl">Terjadi Kesalahan</h1>
+                <p class="mx-auto max-w-xl text-base leading-7 text-stone-600 sm:text-lg">Maaf, ada masalah pada server dan halaman tidak dapat ditampilkan saat ini.</p>
+            </div>
 
-    <div class="container text-center">
-
-        <h1 class="headline"><?= lang('Errors.whoops') ?></h1>
-
-        <p class="lead"><?= lang('Errors.weHitASnag') ?></p>
-
-    </div>
-
+            <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                <a href="javascript:history.back()" class="inline-flex items-center justify-center rounded-full bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-red-600/20 transition hover:bg-red-700">
+                    Kembali
+                </a>
+            </div>
+        </section>
+    </main>
 </body>
-
 </html>

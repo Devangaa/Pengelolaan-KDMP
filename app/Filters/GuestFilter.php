@@ -11,7 +11,7 @@ class GuestFilter implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         if (session()->get('isLoggedIn')) {
-            return redirect()->to('/dashboard');
+            return redirect()->to('/dasbor');
         }
     }
 

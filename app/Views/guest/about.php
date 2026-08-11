@@ -14,7 +14,7 @@
                     Koperasi Desa Merah Putih hadir sebagai pilar ekonomi lokal yang menjembatani kebutuhan pokok warga dan pemasaran produk unggulan desa secara transparan, mandiri, dan berdaya saing.
                 </p>
                 <div class="mt-8 flex flex-wrap items-center gap-4">
-                    <a href="<?= base_url('products') ?>" class="rounded-2xl bg-red-600 px-6 py-3.5 text-sm font-semibold text-white shadow-md shadow-red-600/20 transition duration-200 hover:bg-red-700">
+                    <a href="<?= base_url('produk') ?>" class="rounded-2xl bg-red-600 px-6 py-3.5 text-sm font-semibold text-white shadow-md shadow-red-600/20 transition duration-200 hover:bg-red-700">
                         Lihat Katalog Produk
                     </a>
                     <a href="#visi-misi" class="rounded-2xl border border-stone-200 bg-white px-6 py-3.5 text-sm font-semibold text-stone-700 transition duration-200 hover:border-stone-300 hover:bg-stone-50">

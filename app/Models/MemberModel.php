@@ -55,4 +55,11 @@ class MemberModel extends BaseModel
             'max_length' => 'Nomor telepon maksimal 15 digit.',
         ],
     ];
+
+    public function countActiveMembers(): int
+    {
+        return (int) $this->builder()
+            ->where('deleted_at', null)
+            ->countAllResults(false);
+    }
 }

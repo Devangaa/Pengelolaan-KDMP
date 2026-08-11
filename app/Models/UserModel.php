@@ -34,6 +34,7 @@ class UserModel extends BaseModel
         'email'    => 'required|valid_email|is_unique[users.email,id,{id}]',
         'password' => 'required|min_length[6]',
         'role'     => 'required|in_list[admin,kasir]',
+        'avatar' => 'permit_empty|is_image[image]|max_size[image,1024]|ext_in[image,png,jpg,jpeg,gif,webp]',
     ];
     protected $validationMessages = [
         'email' => [
@@ -53,6 +54,11 @@ class UserModel extends BaseModel
         'role' => [
             'required'    => 'Role wajib diisi.',
             'in_list'     => 'Role harus berupa "admin" atau "kasir".',
+        ],
+        'avatar' => [
+            'is_image' => 'File harus berupa gambar.',
+            'max_size' => 'Ukuran gambar maksimal 1MB.',
+            'ext_in'   => 'Format gambar harus berupa PNG, JPG, JPEG, GIF, atau WEBP.',
         ],
     ];
 }

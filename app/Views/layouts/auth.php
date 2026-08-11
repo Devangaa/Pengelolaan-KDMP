@@ -14,6 +14,7 @@
     <script src="<?= base_url('assets/js/auth.js') ?>"></script>
 </head>
 <body class="min-h-screen bg-stone-50 text-stone-800 antialiased">
+    <?= $this->include('components/notification_success') ?>
     <main class="min-h-screen">
         <?= $this->renderSection('content'); ?>
     </main>

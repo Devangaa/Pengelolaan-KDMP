@@ -112,4 +112,17 @@ class ProductModel extends BaseModel
     {
         return $this->getFilteredProducts(null, null, 'popular')->findAll($limit);
     }
+
+    public function getLowStockProducts(int $limit = 10, int $threshold = 5)
+    {
+        return $this->builder()
+            ->select('products.id, products.name as nama_produk, product_categories.name as kategori, products.stock as stok')
+            ->join('product_categories', 'product_categories.id = products.category_id', 'left')
+            ->where('products.deleted_at', null)
+            ->where('products.stock <', $threshold)
+            ->orderBy('products.stock', 'ASC')
+            ->limit($limit)
+            ->get()
+            ->getResultArray();
+    }
 }

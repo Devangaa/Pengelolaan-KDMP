@@ -11,8 +11,8 @@
             <div class="flex items-center gap-8">
                 <nav class="hidden items-center gap-8 text-sm font-medium md:flex">
                     <a href="<?= base_url('/') ?>" class="transition <?= url_is('/') ? 'text-red-600 font-semibold' : 'text-stone-600 hover:text-red-600' ?>">Beranda</a>
-                    <a href="<?= base_url('products') ?>" class="transition <?= url_is('products*') ? 'text-red-600 font-semibold' : 'text-stone-600 hover:text-red-600' ?>">Katalog</a>
-                    <a href="<?= base_url('about') ?>" class="transition <?= url_is('about*') ? 'text-red-600 font-semibold' : 'text-stone-600 hover:text-red-600' ?>">Tentang Kami</a>
+                    <a href="<?= base_url('produk') ?>" class="transition <?= url_is('produk*') ? 'text-red-600 font-semibold' : 'text-stone-600 hover:text-red-600' ?>">Katalog</a>
+                    <a href="<?= base_url('tentang-kami') ?>" class="transition <?= url_is('tentang-kami*') ? 'text-red-600 font-semibold' : 'text-stone-600 hover:text-red-600' ?>">Tentang Kami</a>
                 </nav>
 
                 <button type="button" class="inline-flex items-center justify-center rounded-lg border border-red-200 p-2 text-red-600 transition hover:bg-red-50 md:hidden" aria-label="Buka menu" data-mobile-menu-toggle>
@@ -30,8 +30,8 @@
         <div class="absolute top-full left-0 right-0 z-50 shadow-lg border-b border-red-100 bg-white px-4 py-0 shadow-sm transition-all duration-300 ease-in-out md:hidden max-h-0 overflow-hidden" data-mobile-menu>
             <nav class="flex flex-col gap-3 py-4 text-sm font-medium">
                 <a href="<?= base_url('/') ?>" class="rounded-lg px-3 py-2 transition <?= url_is('/') ? 'bg-red-50 text-red-600 font-semibold' : 'text-stone-700 hover:bg-red-50 hover:text-red-600' ?>">Beranda</a>
-                <a href="<?= base_url('products') ?>" class="rounded-lg px-3 py-2 transition <?= url_is('products*') ? 'bg-red-50 text-red-600 font-semibold' : 'text-stone-700 hover:bg-red-50 hover:text-red-600' ?>">Katalog</a>
-                <a href="<?= base_url('about') ?>" class="rounded-lg px-3 py-2 transition <?= url_is('about*') ? 'bg-red-50 text-red-600 font-semibold' : 'text-stone-700 hover:bg-red-50 hover:text-red-600' ?>">Tentang Kami</a>
+                <a href="<?= base_url('produk') ?>" class="rounded-lg px-3 py-2 transition <?= url_is('produk*') ? 'bg-red-50 text-red-600 font-semibold' : 'text-stone-700 hover:bg-red-50 hover:text-red-600' ?>">Katalog</a>
+                <a href="<?= base_url('tentang-kami') ?>" class="rounded-lg px-3 py-2 transition <?= url_is('tentang-kami') ? 'bg-red-50 text-red-600 font-semibold' : 'text-stone-700 hover:bg-red-50 hover:text-red-600' ?>">Tentang Kami</a>
                 <a href="<?= base_url('login') ?>" class="mt-2 inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700">
                     Masuk
                 </a>
