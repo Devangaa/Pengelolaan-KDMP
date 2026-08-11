@@ -8,7 +8,7 @@
         <div class="grid gap-6 lg:grid-cols-[1.5fr_1fr] lg:items-center">
             <div>
                 <p class="text-sm font-semibold uppercase tracking-[0.24em] text-red-600">Katalog Produk</p>
-                <h1 class="mt-3 text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">Katalog Produk Kasir</h1>
+                <h1 class="mt-3 text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">Katalog Produk</h1>
                 <p class="mt-4 max-w-2xl text-stone-600">Jelajahi dan cari produk untuk penjualan di mesin kasir.</p>
             </div>
         </div>

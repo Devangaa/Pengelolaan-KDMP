@@ -61,4 +61,14 @@ class TransactionDetailModel extends BaseModel
             'greater_than_equal_to' => 'Subtotal harus lebih besar atau sama dengan 0.',
         ],
     ];
+
+    public function getItemsByTransactionUuid(string $transactionId)
+    {
+        return $this->builder()
+            ->select('transaction_details.*, products.name as product_name')
+            ->join('products', 'products.id = transaction_details.product_id', 'left')
+            ->where('transaction_id', $transactionId)
+            ->get()
+            ->getResultArray();
+    }
 }
