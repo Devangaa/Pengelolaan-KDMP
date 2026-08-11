@@ -138,6 +138,37 @@ class TransactionModel extends BaseModel
             ->getResultArray();
     }
 
+    public function getTransactionsByUser(string $userId, ?string $orderBy = 'latest', ?string $startDate = null, ?string $endDate = null, int $perPage = 20, string $pageName = 'transactions')
+    {
+        $this->select('transactions.id, transactions.transaction_id as no_struk, transactions.transaction_id, transactions.total, transactions.payment_type, transactions.created_at, members.name as member_name')
+            ->join('members', 'members.id = transactions.member_id', 'left')
+            ->where('transactions.user_id', $userId);
+
+        if (!empty($startDate)) {
+            $this->where('DATE(transactions.created_at) >=', $startDate);
+        }
+
+        if (!empty($endDate)) {
+            $this->where('DATE(transactions.created_at) <=', $endDate);
+        }
+
+        $this->orderBy('transactions.created_at', $orderBy === 'oldest' ? 'ASC' : 'DESC');
+
+        return $this->paginate($perPage, $pageName);
+    }
+
+    public function getTransactionByTransactionIdAndUser(string $transactionId, string $userId): ?array
+    {
+        return $this->builder()
+            ->select('transactions.id, transactions.transaction_id, transactions.total, transactions.pay, transactions.`change`, transactions.payment_type, transactions.created_at, members.name as member_name')
+            ->join('members', 'members.id = transactions.member_id', 'left')
+            ->where('transactions.transaction_id', $transactionId)
+            ->where('transactions.user_id', $userId)
+            ->limit(1)
+            ->get()
+            ->getRowArray();
+    }
+
     public function getFirstTransactionTimeByUser(string $userId, string $date): ?string
     {
         $row = $this->builder()

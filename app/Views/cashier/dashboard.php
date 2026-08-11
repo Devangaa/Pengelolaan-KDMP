@@ -116,7 +116,7 @@
                 <h2 class="text-lg font-semibold text-stone-900">Transaksi Hari Ini</h2>
                 <p class="text-sm text-stone-500">Aktivitas transaksi terbaru yang Anda proses.</p>
             </div>
-            <a href="<?= base_url('cashier/transactions') ?>" class="text-sm font-semibold text-red-600 transition hover:text-red-700">Lihat Semua</a>
+            <a href="<?= base_url('transaksi') ?>" class="text-sm font-semibold text-red-600 transition hover:text-red-700">Lihat Semua</a>
         </div>
         <div class="mt-5 h-[26rem] overflow-x-auto overflow-y-auto">
             <table class="min-w-full divide-y divide-stone-200 text-sm">
@@ -138,7 +138,7 @@
                                 <td class="px-4 py-4 capitalize"><?= esc($trx['payment_type']) ?></td>
                                 <td class="px-4 py-4">Rp <?= number_format($trx['total'], 0, ',', '.') ?></td>
                                 <td class="px-4 py-4">
-                                    <a href="<?= base_url('cashier/transactions') ?>" class="inline-flex items-center justify-center rounded-full bg-red-50 px-4 py-2 text-xs font-semibold text-red-600 transition hover:bg-red-100 whitespace-nowrap text-center">Cetak Struk</a>
+                                    <a href="<?= base_url('transaksi/' . esc($trx['no_struk']) . '/print') ?>" class="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-red-700 whitespace-nowrap">Cetak Struk</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
