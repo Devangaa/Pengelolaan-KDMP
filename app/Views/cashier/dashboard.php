@@ -13,15 +13,14 @@
             </div>
             <div class="hidden md:flex md:flex-wrap md:items-center md:gap-3 md:justify-start lg:justify-end">
                 <?php if (!empty($shiftActive)): ?>
-                    <a href="<?= base_url('cashier/pos') ?>" class="inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-red-200 transition hover:bg-red-700">
+                    <a href="<?= base_url('pos') ?>" class="inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-red-200 transition hover:bg-red-700">
                         <span class="material-icons">point_of_sale</span>
-                        <span>Masuk Mesin Kasir (POS)</span>
+                        <span>Masuk Mesin Kasir</span>
                     </a>
-                    <a href="<?= base_url('cashier/rekap_shift') ?>" class="inline-flex items-center justify-center rounded-full border border-stone-200 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:bg-stone-100">Tutup Shift</a>
                 <?php else: ?>
-                    <a href="<?= base_url('cashier/pos') ?>" class="inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-red-200 transition hover:bg-red-700">
+                    <a href="<?= base_url('pos') ?>" class="inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-red-200 transition hover:bg-red-700">
                         <span class="material-icons">play_arrow</span>
-                        <span>Buka Shift & Masuk POS</span>
+                        <span>Buka Shift</span>
                     </a>
                 <?php endif; ?>
             </div>

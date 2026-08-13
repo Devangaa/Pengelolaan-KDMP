@@ -23,7 +23,15 @@ $routes->group('', ['filter' => 'role'], static function ($routes) {
 $routes->group('', ['filter' => 'role:kasir'], static function ($routes) {
     $routes->get('katalog', 'Cashier\ProductCatalogController::index');
     $routes->get('katalog/saring', 'Cashier\ProductCatalogController::filterProducts');
+
     $routes->get('transaksi', 'Cashier\TransactionController::index');
     $routes->get('transaksi/(:segment)', 'Cashier\TransactionController::detail/$1');
-    $routes->get('transaksi/(:segment)/nota', 'Cashier\TransactionController::downloadNota/$1');
+    $routes->get('transaksi/(:segment)/nota', 'Cashier\TransactionController::downloadNota/$1');   
+
+    $routes->get('pos', 'Cashier\PosController::index');
+    $routes->post('pos/mulai-shift', 'Cashier\PosController::startShift');
+    $routes->post('pos/tutup-shift', 'Cashier\PosController::closeShift');
+    $routes->post('pos/checkout', 'Cashier\PosController::checkout');
+
+    $routes->get('cashier/rekap_shift', 'Cashier\PosController::shiftReport');
 });

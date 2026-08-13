@@ -15,6 +15,7 @@
 </head>
 <body class="min-h-screen bg-stone-50 text-stone-800 antialiased">
     <?= $this->include('components/notification_success') ?>
+    <?= $this->include('components/notification_error') ?>
     <main class="min-h-screen">
         <?= $this->renderSection('content'); ?>
     </main>

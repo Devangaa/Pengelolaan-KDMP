@@ -35,6 +35,24 @@ class CashierShiftModel extends BaseModel
             ->getRowArray() ?: null;
     }
 
+    public function getShiftsByUser(string $userId, ?string $orderBy = 'latest', ?string $startDate = null, ?string $endDate = null, int $perPage = 20, string $pageName = 'transactions')
+    {
+        $this->select('id, user_id, status, modal_awal, uang_fisik, opened_at, closed_at, created_at, updated_at')
+            ->where('user_id', $userId);
+
+        if (!empty($startDate)) {
+            $this->where('DATE(opened_at) >=', $startDate);
+        }
+
+        if (!empty($endDate)) {
+            $this->where('DATE(opened_at) <=', $endDate);
+        }
+
+        $this->orderBy('opened_at', $orderBy === 'oldest' ? 'ASC' : 'DESC');
+
+        return $this->paginate($perPage, $pageName);
+    }
+
     public function getCurrentShiftDataByUser(string $userId): array
     {
         $shift = $this->getLatestShiftByUser($userId);
