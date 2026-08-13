@@ -51,8 +51,8 @@
     </div>
 
     <div id="cashier-pos-section" class="border-t border-stone-200 px-4 py-4">
-        <a href="<?= base_url('cashier/pos') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg <?= (strpos($uri, 'cashier/pos') === 0 ? 'bg-red-700' : 'bg-red-600') ?> px-3 py-2.5 text-sm font-medium text-white transition hover:bg-red-700">
-            <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110 <?= (strpos($uri, 'cashier/pos') === 0 ? 'scale-110' : '') ?>">point_of_sale</span>
+        <a href="<?= base_url('pos') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg <?= (strpos($uri, 'pos') === 0 ? 'bg-red-700' : 'bg-red-600') ?> px-3 py-2.5 text-sm font-medium text-white transition hover:bg-red-700">
+            <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110 <?= (strpos($uri, 'pos') === 0 ? 'scale-110' : '') ?>">point_of_sale</span>
             <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Transaksi</span>
         </a>
     </div>

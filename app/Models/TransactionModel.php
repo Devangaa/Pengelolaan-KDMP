@@ -32,11 +32,11 @@ class TransactionModel extends BaseModel
     protected $validationRules      = [
         'transaction_id' => 'required|max_length[20]',
         'user_id'        => 'required|is_not_unique[users.id]|max_length[36]',
-        'member_id'      => 'required|is_not_unique[members.id]|max_length[36]',
+        'member_id'      => 'permit_empty|is_not_unique[members.id]|max_length[36]',
         'total'          => 'required|integer|greater_than_equal_to[0]',
         'pay'            => 'required|integer|greater_than_equal_to[0]',
         'change'         => 'required|integer|greater_than_equal_to[0]',
-        'payment_type'   => 'required|in_list[payment_type,tunai,nontunai]',
+        'payment_type'   => 'required|in_list[tunai,nontunai]',
     ];
     protected $validationMessages   = [
         'transaction_id' => [
@@ -49,7 +49,7 @@ class TransactionModel extends BaseModel
             'max_length' => 'ID pengguna maksimal 36 karakter.',
         ],
         'member_id' => [
-            'required' => 'ID anggota wajib diisi.',
+            'permit_empty' => 'ID anggota boleh kosong.',
             'is_not_unique' => 'ID anggota tidak valid.',
             'max_length' => 'ID anggota maksimal 36 karakter.',
         ],
