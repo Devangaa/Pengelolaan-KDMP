@@ -36,7 +36,7 @@ Aplikasi ini dibangun menggunakan CodeIgniter 4 dengan menerapkan arsitektur Cle
   - [ ] Antarmuka Kasir (Pencarian produk, Scan Barcode, Keranjang/Cart).
   - [ ] Ketersediaan Stok Real-time (Mencegah transaksi jika stok habis).
   - [ ] Kategori Pembayaran (Tunai, QRIS, Simpanan/Saldo Anggota Koperasi jika ada).
-  - [ ] Cetak Struk/Nota Transaksi (Thermal Printer / Print Friendly PDF).
+  - [x] Cetak Struk/Nota Transaksi (Thermal Printer / Print Friendly PDF).
 - [ ] Manajemen Anggota (Fitur Khas Koperasi)
   - [ ] Data Anggota Koperasi (Diskon khusus, Poin, Pencatatan transaksi per anggota).
 - [ ] Pelaporan dan Analitik (Reporting)
