@@ -33,5 +33,5 @@ $routes->group('', ['filter' => 'role:kasir'], static function ($routes) {
     $routes->post('pos/tutup-shift', 'Cashier\PosController::closeShift');
     $routes->post('pos/checkout', 'Cashier\PosController::checkout');
 
-    $routes->get('cashier/rekap_shift', 'Cashier\PosController::shiftReport');
+    $routes->get('rekap_shift', 'Cashier\PosController::shiftReport');
 });

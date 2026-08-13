@@ -32,11 +32,11 @@ Aplikasi ini dibangun menggunakan CodeIgniter 4 dengan menerapkan arsitektur Cle
 - [ ] Manajemen Stok (Inventory Control)
   - [ ] Penyesuaian Stok Masuk (Stock In/Restock) dengan pencatatan riwayat (bukan edit variabel stok langsung).
   - [ ] Log/Riwayat Perubahan Stok (Masuk, Keluar, Terjual via Kasir, dan Penyesuaian/Rusak).
-- [ ] Sistem Kasir / Point of Sale (POS)
-  - [ ] Antarmuka Kasir (Pencarian produk, Scan Barcode, Keranjang/Cart).
-  - [ ] Ketersediaan Stok Real-time (Mencegah transaksi jika stok habis).
-  - [ ] Kategori Pembayaran (Tunai, QRIS, Simpanan/Saldo Anggota Koperasi jika ada).
-  - [x] Cetak Struk/Nota Transaksi (Thermal Printer / Print Friendly PDF).
+- [x] Sistem Kasir / Point of Sale (POS)
+  - [x] Antarmuka Kasir (Pencarian produk, Keranjang/Cart).
+  - [x] Ketersediaan Stok Real-time (Mencegah transaksi jika stok habis).
+  - [x] Kategori Pembayaran (Tunai, QRIS).
+  - [x] Cetak Struk/Nota Transaksi (Print Friendly PDF).
 - [ ] Manajemen Anggota (Fitur Khas Koperasi)
   - [ ] Data Anggota Koperasi (Diskon khusus, Poin, Pencatatan transaksi per anggota).
 - [ ] Pelaporan dan Analitik (Reporting)
