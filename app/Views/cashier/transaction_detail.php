@@ -17,9 +17,9 @@
                     <span>Kembali</span>
                 </a>
                 <?php if (empty($printMode)): ?>
-                    <a href="<?= base_url('cashier/transactions/' . esc($transaction['transaction_id']) . '/print') ?>" class="inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-red-200 transition hover:bg-red-700">
-                        <span class="material-icons">print</span>
-                        <span>Cetak Struk</span>
+                    <a href="<?= base_url('transaksi/' . esc($transaction['transaction_id']) . '/nota') ?>" class="inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-red-200 transition hover:bg-red-700">
+                        <span class="material-icons">download</span>
+                        <span>Unduh Struk</span>
                     </a>
                 <?php endif; ?>
             </div>
