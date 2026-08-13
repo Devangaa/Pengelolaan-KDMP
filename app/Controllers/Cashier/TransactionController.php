@@ -6,6 +6,8 @@ use App\Controllers\BaseController;
 use App\Models\TransactionDetailModel;
 use App\Models\TransactionModel;
 use App\Models\UserModel;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class TransactionController extends BaseController
 {
@@ -101,12 +103,12 @@ class TransactionController extends BaseController
         ]);
     }
 
-    public function print(string $transactionId = null)
+    public function downloadNota(string $transactionId = null)
     {
         $session = session();
 
         if (empty($transactionId)) {
-            return redirect()->to(base_url('cashier/reports'));
+            return redirect()->to(base_url('transaksi'));
         }
 
         $transactionModel = new TransactionModel();
@@ -119,11 +121,30 @@ class TransactionController extends BaseController
         $detailModel = new TransactionDetailModel();
         $items = $detailModel->getItemsByTransactionUuid($transaction['id']);
 
-        return view('cashier/transaction_detail', [
+        $html = view('cashier/transaction_nota_pdf', [
             'cashier' => $this->getCashierData(),
             'transaction' => $transaction,
             'items' => $items,
-            'printMode' => true,
         ]);
+
+        $options = new Options();
+        $options->set('isRemoteEnabled', false);
+        $options->set('defaultFont', 'Helvetica');
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+
+        $widthPt = 226.77;
+        $baseHeightPt = 300;
+        $perItemHeightPt = 24;
+        $heightPt = $baseHeightPt + (count($items) * $perItemHeightPt);
+
+        $dompdf->setPaper([0, 0, $widthPt, $heightPt], 'portrait');
+        $dompdf->render();
+
+        $fileName = 'nota-' . $transaction['transaction_id'] . '.pdf';
+
+        $dompdf->stream($fileName, ['Attachment' => true]);
+        exit;
     }
 }

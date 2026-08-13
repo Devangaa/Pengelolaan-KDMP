@@ -24,6 +24,6 @@ $routes->group('', ['filter' => 'role:kasir'], static function ($routes) {
     $routes->get('katalog', 'Cashier\ProductCatalogController::index');
     $routes->get('katalog/saring', 'Cashier\ProductCatalogController::filterProducts');
     $routes->get('transaksi', 'Cashier\TransactionController::index');
-    $routes->get('transaksi/(:segment)/print', 'Cashier\TransactionController::print/$1');
     $routes->get('transaksi/(:segment)', 'Cashier\TransactionController::detail/$1');
+    $routes->get('transaksi/(:segment)/nota', 'Cashier\TransactionController::downloadNota/$1');
 });

@@ -21,8 +21,8 @@ class TransactionSeeder extends Seeder
         $transactionModel       = new TransactionModel();
         $transactionDetailModel = new TransactionDetailModel();
 
-        $transactionModel->protect(false);
-        $transactionDetailModel->protect(false);
+        // $transactionModel->protect(false);
+        // $transactionDetailModel->protect(false);
 
         $userIds   = $userModel->findColumn('id');
         $memberIds = $memberModel->findColumn('id');

@@ -138,7 +138,7 @@
                                 <td class="px-4 py-4 capitalize"><?= esc($trx['payment_type']) ?></td>
                                 <td class="px-4 py-4">Rp <?= number_format($trx['total'], 0, ',', '.') ?></td>
                                 <td class="px-4 py-4">
-                                    <a href="<?= base_url('transaksi/' . esc($trx['no_struk']) . '/print') ?>" class="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-red-700 whitespace-nowrap">Cetak Struk</a>
+                                    <a href="<?= base_url('transaksi/' . esc($trx['no_struk']) . '/nota') ?>" class="inline-flex items-center justify-center rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-red-700 whitespace-nowrap">Unduh Struk</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
