@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             return `
                 <button type="button" class="group rounded-3xl border border-red-100 bg-white text-left shadow-sm transition ${isMaxReached ? 'cursor-not-allowed opacity-60' : 'hover:-translate-y-0.5 hover:shadow-md'}" data-product-id="${product.id}" ${isMaxReached ? 'disabled' : ''}>
-                    <div class="relative h-32 overflow-hidden bg-red-50">
+                    <div class="relative aspect-square w-full overflow-hidden bg-red-50">
                         <img src="${product.image ? '/uploads/products/' + product.image : '/assets/images/product-placeholder.webp'}" alt="${product.name}" class="h-full w-full object-cover">
                     </div>
                     <div class="space-y-3 p-3">

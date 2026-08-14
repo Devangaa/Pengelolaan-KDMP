@@ -3,18 +3,29 @@
 namespace App\Controllers\Cashier;
 
 use App\Controllers\BaseController;
-use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\ProductModel;
 use App\Models\ProductCategoryModel;
-use App\Models\UserModel;
+use Config\AppConstants;
 
 class ProductCatalogController extends BaseController
 {
     public function index()
     {
+        $session = session();
+        $userId = $session->get('id');
+
+        if (!$userId) {
+            return redirect()->to(base_url('login'))->with('error', AppConstants::MSG_LOGIN_REQUIRED);
+        }
+
+        // Validate authorization
+        if (!authorize_user_role(AppConstants::ROLE_KASIR)) {
+            log_transaction('warning', 'Unauthorized product catalog access');
+            return redirect()->to(base_url('dasbor'))->with('error', AppConstants::MSG_UNAUTHORIZED);
+        }
+
         $productModel = new ProductModel();
         $categoryModel = new ProductCategoryModel();
-        $session = session();
 
         $categoryId = $this->request->getGet('category');
         $search     = $this->request->getGet('q');
@@ -28,38 +39,15 @@ class ProductCatalogController extends BaseController
 
         $pager = $productModel->pager;
 
-        // cashier info for sidebar
-        $cashier = [];
-        $userId = $session->get('id');
-        if ($userId) {
-            $userModel = new UserModel();
-            $user = $userModel->find($userId);
-            if ($user) {
-                $cashier = [
-                    'name' => $user->name ?? $session->get('name'),
-                    'email' => $user->email ?? $session->get('email'),
-                    'avatar' => $user->avatar ?? null,
-                ];
-            }
-        }
-
-        if (empty($cashier)) {
-            $cashier = [
-                'name' => $session->get('name'),
-                'email' => $session->get('email'),
-                'avatar' => null,
-            ];
-        }
-
         $data = [
-            'title'            => 'Katalog Produk - Kasir',
+            'title'            => page_title('Katalog Produk'),
             'categories'       => $categoryModel->findAll(),
             'products'         => $products,
             'pager'            => $pager,
             'selectedCategory' => $categoryId,
             'searchKeyword'    => $search,
             'selectedSort'     => $sort,
-            'cashier'          => $cashier,
+            'cashier'          => current_cashier_data(),
         ];
 
         return view('cashier/product_catalog', $data);

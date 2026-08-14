@@ -5,32 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-name" content="<?= csrf_token() ?>">
     <meta name="csrf-value" content="<?= csrf_hash() ?>">
-    <title><?= esc($title ?? 'POS Kasir') ?></title>
+    <title><?= esc($title ?? 'POS Kasir - Koperasi Desa Merah Putih') ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="icon" type="image/webp" href="<?= base_url('assets/images/logo.webp') ?>">
     <link rel="shortcut icon" type="image/webp" href="<?= base_url('assets/images/logo.webp') ?>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="<?= base_url('assets/css/custom.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/cashier-custom.css') ?>">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
     <script>
         window.posProducts = <?= json_encode($products ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP) ?>;
     </script>
     <script src="<?= base_url('assets/js/pos.js') ?>" defer></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .scrollbar-thin::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-            background: #d6d3d1;
-            border-radius: 9999px;
-        }
-    </style>
 </head>
 <body class="min-h-screen bg-stone-100 text-stone-800">
     <?= $this->include('components/notification_success') ?>

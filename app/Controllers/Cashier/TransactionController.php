@@ -5,48 +5,47 @@ namespace App\Controllers\Cashier;
 use App\Controllers\BaseController;
 use App\Models\TransactionDetailModel;
 use App\Models\TransactionModel;
-use App\Models\UserModel;
+use Config\AppConstants;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
 class TransactionController extends BaseController
 {
-    private function getCashierData(): array
-    {
-        $session = session();
-        $userId = $session->get('id');
-        $cashier = [];
-
-        if ($userId) {
-            $userModel = new UserModel();
-            $user = $userModel->find($userId);
-
-            if ($user) {
-                $cashier = [
-                    'name' => $user->name ?? $session->get('name'),
-                    'email' => $user->email ?? $session->get('email'),
-                    'avatar' => $user->avatar ?? null,
-                ];
-            }
-        }
-
-        if (empty($cashier)) {
-            $cashier = [
-                'name' => $session->get('name'),
-                'email' => $session->get('email'),
-                'avatar' => null,
-            ];
-        }
-
-        return $cashier;
-    }
-
     public function index()
     {
         $session = session();
+        $userId = $session->get('id');
+
+        if (!$userId) {
+            return redirect()->to(base_url('login'))->with('error', AppConstants::MSG_LOGIN_REQUIRED);
+        }
+
+        // Validate authorization
+        if (!authorize_user_role(AppConstants::ROLE_KASIR)) {
+            log_transaction('warning', 'Unauthorized transaction history access');
+            return redirect()->to(base_url('dasbor'))->with('error', AppConstants::MSG_UNAUTHORIZED);
+        }
+
         $orderBy = $this->request->getGet('orderBy') ?? 'latest';
         $startDate = $this->request->getGet('startDate');
         $endDate = $this->request->getGet('endDate');
+
+        // Validate dates
+        if (!empty($startDate)) {
+            $startDateValidation = validate_date($startDate);
+            if (!$startDateValidation['valid']) {
+                return redirect()->back()->with('error', $startDateValidation['error']);
+            }
+            $startDate = $startDateValidation['value'];
+        }
+
+        if (!empty($endDate)) {
+            $endDateValidation = validate_date($endDate);
+            if (!$endDateValidation['valid']) {
+                return redirect()->back()->with('error', $endDateValidation['error']);
+            }
+            $endDate = $endDateValidation['value'];
+        }
 
         if (!empty($startDate) && empty($endDate)) {
             $endDate = date('Y-m-d');
@@ -54,7 +53,7 @@ class TransactionController extends BaseController
 
         $transactionModel = new TransactionModel();
         $transactions = $transactionModel->getTransactionsByUser(
-            $session->get('id'),
+            $userId,
             $orderBy,
             $startDate,
             $endDate,
@@ -63,7 +62,8 @@ class TransactionController extends BaseController
         );
 
         $data = [
-            'cashier' => $this->getCashierData(),
+            'title' => page_title('Riwayat Transaksi'),
+            'cashier' => current_cashier_data(),
             'transactions' => $transactions,
             'orderBy' => $orderBy,
             'startDate' => $startDate,
@@ -81,13 +81,24 @@ class TransactionController extends BaseController
     public function detail(string $transactionId = null)
     {
         $session = session();
+        $userId = $session->get('id');
+
+        if (!$userId) {
+            return redirect()->to(base_url('login'))->with('error', AppConstants::MSG_LOGIN_REQUIRED);
+        }
+
+        // Validate authorization
+        if (!authorize_user_role(AppConstants::ROLE_KASIR)) {
+            log_transaction('warning', 'Unauthorized transaction detail access');
+            return redirect()->to(base_url('dasbor'))->with('error', AppConstants::MSG_UNAUTHORIZED);
+        }
 
         if (empty($transactionId)) {
-            return redirect()->to(base_url('cashier/reports'));
+            return redirect()->to(base_url('transaksi'));
         }
 
         $transactionModel = new TransactionModel();
-        $transaction = $transactionModel->getTransactionByTransactionIdAndUser($transactionId, $session->get('id'));
+        $transaction = $transactionModel->getTransactionByTransactionIdAndUser($transactionId, $userId);
 
         if (empty($transaction)) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Transaksi tidak ditemukan.');
@@ -97,7 +108,8 @@ class TransactionController extends BaseController
         $items = $detailModel->getItemsByTransactionUuid($transaction['id']);
 
         return view('cashier/transaction_detail', [
-            'cashier' => $this->getCashierData(),
+            'title' => page_title('Detail Transaksi'),
+            'cashier' => current_cashier_data(),
             'transaction' => $transaction,
             'items' => $items,
         ]);
@@ -106,13 +118,24 @@ class TransactionController extends BaseController
     public function downloadNota(string $transactionId = null)
     {
         $session = session();
+        $userId = $session->get('id');
+
+        if (!$userId) {
+            return redirect()->to(base_url('login'))->with('error', AppConstants::MSG_LOGIN_REQUIRED);
+        }
+
+        // Validate authorization
+        if (!authorize_user_role(AppConstants::ROLE_KASIR)) {
+            log_transaction('warning', 'Unauthorized nota download attempt');
+            return redirect()->to(base_url('dasbor'))->with('error', AppConstants::MSG_UNAUTHORIZED);
+        }
 
         if (empty($transactionId)) {
             return redirect()->to(base_url('transaksi'));
         }
 
         $transactionModel = new TransactionModel();
-        $transaction = $transactionModel->getTransactionByTransactionIdAndUser($transactionId, $session->get('id'));
+        $transaction = $transactionModel->getTransactionByTransactionIdAndUser($transactionId, $userId);
 
         if (empty($transaction)) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound('Transaksi tidak ditemukan.');
@@ -122,7 +145,7 @@ class TransactionController extends BaseController
         $items = $detailModel->getItemsByTransactionUuid($transaction['id']);
 
         $html = view('cashier/transaction_nota_pdf', [
-            'cashier' => $this->getCashierData(),
+            'cashier' => current_cashier_data(),
             'transaction' => $transaction,
             'items' => $items,
         ]);

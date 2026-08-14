@@ -16,7 +16,7 @@ class AuthController extends BaseController
     public function login()
     {
         return view('auth/login', [
-            'title' => 'Masuk - Koperasi Merah Putih'
+            'title' => page_title('Masuk')
         ]);
     }
 

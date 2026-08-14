@@ -43,8 +43,8 @@
                 <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110 <?= (strpos($uri, 'transaksi') === 0 ? 'scale-110 text-red-600' : '') ?>">description</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Riwayat Transaksi</span>
             </a>
-            <a href="<?= base_url('rekap_shift') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium <?= (strpos($uri, 'cashier/rekap_shift') === 0 ? 'text-red-600 bg-red-50' : 'text-stone-700') ?> transition hover:bg-red-50 hover:text-red-600">
-                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110 <?= (strpos($uri, 'cashier/rekap_shift') === 0 ? 'scale-110 text-red-600' : '') ?>">query_stats</span>
+            <a href="<?= base_url('rekap_shift') ?>" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium <?= (strpos($uri, 'rekap_shift') === 0 ? 'text-red-600 bg-red-50' : 'text-stone-700') ?> transition hover:bg-red-50 hover:text-red-600">
+                <span class="material-icons flex w-6 flex-shrink-0 justify-center text-base transition-transform duration-200 group-hover:scale-110 <?= (strpos($uri, 'rekap_shift') === 0 ? 'scale-110 text-red-600' : '') ?>">query_stats</span>
                 <span class="sidebar-label whitespace-nowrap transition-opacity duration-200 ease-out">Rekap Shift</span>
             </a>
         </nav>

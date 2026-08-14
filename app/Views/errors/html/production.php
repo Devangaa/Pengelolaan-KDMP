@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex">
-    <title>Terjadi Kesalahan</title>
+    <title>Terjadi Kesalahan - Koperasi Desa Merah Putih</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(239,68,68,0.12),_transparent_35%),linear-gradient(135deg,_#fff7f7_0%,_#ffffff_100%)] text-stone-900">

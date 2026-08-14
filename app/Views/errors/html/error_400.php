@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>400 - Permintaan Tidak Valid</title>
+    <title>400 - Permintaan Tidak Valid - Koperasi Desa Merah Putih</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(239,68,68,0.12),_transparent_35%),linear-gradient(135deg,_#fff7f7_0%,_#ffffff_100%)] text-stone-900">

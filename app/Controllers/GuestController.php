@@ -21,7 +21,7 @@ class GuestController extends BaseController
         $featuredProducts = $this->productModel->getPopularProducts(10);
 
         $data = [
-            'title'            => 'Beranda - Koperasi Desa Merah Putih',
+            'title'            => page_title('Beranda'),
             'featuredProducts' => $featuredProducts,
             'popular_products' => $featuredProducts,
             'categories'       => $this->productCategoryModel->findAll(),
@@ -43,7 +43,7 @@ class GuestController extends BaseController
             ->paginate($perPage, 'products');
 
         $data = [
-            'title'            => 'Katalog Produk - Koperasi Desa Merah Putih',
+            'title'            => page_title('Katalog Produk'),
             'categories'       => $this->productCategoryModel->findAll(),
             'products'         => $products,
             'pager'            => $this->productModel->pager,
@@ -87,7 +87,7 @@ class GuestController extends BaseController
     public function about()
     {
         $data = [
-            'title' => 'Tentang Kami - Koperasi Desa Merah Putih',
+            'title' => page_title('Tentang Kami'),
         ];
 
         return view('guest/about', $data);

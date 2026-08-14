@@ -6,7 +6,7 @@
                 
                 <div class="aspect-square w-full overflow-hidden bg-red-50">
                     <img
-                        src="<?= !empty($product['image']) ? base_url('uploads/products/' . $product['image']) : base_url('assets/images/product-placeholder.webp') ?>"
+                        src="<?= esc(product_image_url($product['image'] ?? null)) ?>"
                         alt="<?= esc($product['name'] ?? 'Produk koperasi') ?>"
                         class="h-full w-full object-cover <?= $isOutOfStock ? 'grayscale opacity-70' : '' ?>"
                     >
@@ -28,7 +28,7 @@
 
                     <div class="mt-auto pt-3 sm:pt-5">
                         <p class="text-sm font-semibold sm:text-lg <?= $isOutOfStock ? 'text-stone-500' : 'text-red-600' ?>">
-                            Rp <?= number_format($product['sell_price'] ?? 0, 0, ',', '.') ?>
+                            <?= rupiah($product['sell_price'] ?? 0) ?>
                         </p>
                     </div>
                 </div>

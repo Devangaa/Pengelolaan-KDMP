@@ -45,13 +45,14 @@ class DashboardController extends BaseController
         $transaksiTerbaru = $transactionModel->getTodayTransactionsWithCashier($today, 8);
 
         $data = [
+            'title' => page_title('Dashboard'),
             'penjualanHariIni' => $penjualanHariIni,
             'totalTransaksiHariIni' => $totalTransaksiHariIni,
             'stokMenipisCount' => $stokMenipisCount,
             'listStokMenipis' => $stokMenipisList,
             'totalAnggota' => $totalAnggota,
             'transaksiTerbaru' => $transaksiTerbaru,
-                'admin' => $admin,
+            'admin' => $admin,
         ];
 
         return view('admin/dashboard', $data);

@@ -7,7 +7,9 @@ use App\Models\CashierShiftModel;
 use App\Models\ProductModel;
 use App\Models\TransactionDetailModel;
 use App\Models\TransactionModel;
-use App\Models\UserModel;
+use Config\AppConstants;
+use CodeIgniter\Database\Exceptions\DatabaseException;
+
 
 class PosController extends BaseController
 {
@@ -15,26 +17,6 @@ class PosController extends BaseController
     {
         $session = session();
         $userId = $session->get('id');
-
-        $cashier = [];
-        if ($userId) {
-            $user = (new UserModel())->find($userId);
-            if ($user) {
-                $cashier = [
-                    'name' => $user->name ?? $session->get('name'),
-                    'email' => $user->email ?? $session->get('email'),
-                    'avatar' => $user->avatar ?? null,
-                ];
-            }
-        }
-
-        if (empty($cashier)) {
-            $cashier = [
-                'name' => $session->get('name'),
-                'email' => $session->get('email'),
-                'avatar' => null,
-            ];
-        }
 
         $shiftModel = new CashierShiftModel();
         $shiftData = $shiftModel->getCurrentShiftDataByUser((string) $userId);
@@ -44,13 +26,13 @@ class PosController extends BaseController
             ->findAll();
 
         return view('cashier/pos', [
-            'cashier' => $cashier,
+            'cashier' => current_cashier_data(),
             'products' => $products,
             'shiftActive' => $shiftData['shiftActive'],
             'shiftStartedAt' => $shiftData['shiftStartedAt'],
             'openingBalance' => $shiftData['openingBalance'],
             'shift' => $shiftData['latestShift'],
-            'title' => 'POS Kasir',
+            'title' => page_title('POS Kasir'),
         ]);
     }
 
@@ -60,34 +42,46 @@ class PosController extends BaseController
         $userId = $session->get('id');
 
         if (!$userId) {
-            return redirect()->to(base_url('login'))->with('error', 'Silakan login terlebih dahulu.');
+            return redirect()->to(base_url('login'))->with('error', AppConstants::MSG_LOGIN_REQUIRED);
+        }
+
+        // Validate authorization
+        if (!authorize_user_role(AppConstants::ROLE_KASIR)) {
+            log_transaction('warning', 'Unauthorized startShift attempt', ['userId' => $userId]);
+            return redirect()->to(base_url('dasbor'))->with('error', AppConstants::MSG_UNAUTHORIZED);
         }
 
         $shiftModel = new CashierShiftModel();
         $latestShift = $shiftModel->getLatestShiftByUser((string) $userId);
 
         if ($latestShift && empty($latestShift['closed_at'])) {
-            return redirect()->to(base_url('pos'))->with('error', 'Shift kasir masih aktif. Silakan lanjutkan transaksi di POS.');
+            return redirect()->to(base_url('pos'))->with('error', AppConstants::MSG_SHIFT_ALREADY_ACTIVE);
         }
 
-        $modalAwal = (float) ($this->request->getPost('modal_awal') ?? 0);
-
-        if ($modalAwal < 0) {
-            return redirect()->to(base_url('pos'))->with('error', 'Uang awal kasir tidak boleh negatif.');
+        // Validate amount
+        $amountValidation = validate_amount($this->request->getPost('modal_awal'), 0);
+        if (!$amountValidation['valid']) {
+            return redirect()->back()->with('error', $amountValidation['error']);
         }
 
-        $openedAt = date('Y-m-d H:i:s');
+        $modalAwal = $amountValidation['value'];
 
-        $shiftModel->insert([
-            'user_id' => (string) $userId,
-            'status' => 'open',
-            'modal_awal' => $modalAwal,
-            'uang_fisik' => $modalAwal,
-            'opened_at' => $openedAt,
-            'closed_at' => null,
-        ]);
+        try {
+            $shiftModel->insert([
+                'user_id' => (string) $userId,
+                'status' => AppConstants::SHIFT_STATUS_OPEN,
+                'modal_awal' => $modalAwal,
+                'uang_fisik' => $modalAwal,
+                'opened_at' => date('Y-m-d H:i:s'),
+                'closed_at' => null,
+            ]);
 
-        return redirect()->to(base_url('pos'))->with('success', 'Shift kasir berhasil dimulai.');
+            log_transaction('info', 'Shift started', ['modalAwal' => $modalAwal]);
+            return redirect()->to(base_url('pos'))->with('success', 'Shift kasir berhasil dimulai.');
+        } catch (DatabaseException $e) {
+            log_transaction('error', 'Shift start failed', ['error' => $e->getMessage()]);
+            return redirect()->to(base_url('pos'))->with('error', AppConstants::MSG_TRANSACTION_FAILED);
+        }
     }
 
     public function closeShift()
@@ -96,7 +90,13 @@ class PosController extends BaseController
         $userId = $session->get('id');
 
         if (!$userId) {
-            return redirect()->to(base_url('login'))->with('error', 'Silakan login terlebih dahulu.');
+            return redirect()->to(base_url('login'))->with('error', AppConstants::MSG_LOGIN_REQUIRED);
+        }
+
+        // Validate authorization
+        if (!authorize_user_role(AppConstants::ROLE_KASIR)) {
+            log_transaction('warning', 'Unauthorized closeShift attempt', ['userId' => $userId]);
+            return redirect()->to(base_url('dasbor'))->with('error', AppConstants::MSG_UNAUTHORIZED);
         }
 
         $shiftModel = new CashierShiftModel();
@@ -110,15 +110,27 @@ class PosController extends BaseController
             return redirect()->to(base_url('pos'))->with('error', 'Sesi kasir sudah ditutup sebelumnya.');
         }
 
-        $uangFisik = (float) ($this->request->getPost('uang_fisik') ?? 0);
+        // Validate amount
+        $amountValidation = validate_amount($this->request->getPost('uang_fisik'), 0);
+        if (!$amountValidation['valid']) {
+            return redirect()->back()->with('error', $amountValidation['error']);
+        }
 
-        $shiftModel->update($shift['id'], [
-            'status' => 'closed',
-            'uang_fisik' => $uangFisik,
-            'closed_at' => date('Y-m-d H:i:s'),
-        ]);
+        $uangFisik = $amountValidation['value'];
 
-        return redirect()->to(base_url('dasbor'))->with('success', 'Sesi kasir berhasil ditutup.');
+        try {
+            $shiftModel->update($shift['id'], [
+                'status' => AppConstants::SHIFT_STATUS_CLOSED,
+                'uang_fisik' => $uangFisik,
+                'closed_at' => date('Y-m-d H:i:s'),
+            ]);
+
+            log_transaction('info', 'Shift closed', ['shiftId' => $shift['id'], 'uangFisik' => $uangFisik]);
+            return redirect()->to(base_url('dasbor'))->with('success', 'Sesi kasir berhasil ditutup.');
+        } catch (DatabaseException $e) {
+            log_transaction('error', 'Shift close failed', ['error' => $e->getMessage()]);
+            return redirect()->to(base_url('pos'))->with('error', AppConstants::MSG_TRANSACTION_FAILED);
+        }
     }
 
     public function checkout()
@@ -127,29 +139,72 @@ class PosController extends BaseController
         $userId = $session->get('id');
 
         if (!$userId) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Silakan login terlebih dahulu.'])->setStatusCode(401);
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => AppConstants::MSG_LOGIN_REQUIRED,
+            ])->setStatusCode(401);
         }
 
+        // Validate authorization
+        if (!authorize_user_role(AppConstants::ROLE_KASIR)) {
+            log_transaction('warning', 'Unauthorized checkout attempt');
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => AppConstants::MSG_UNAUTHORIZED,
+            ])->setStatusCode(403);
+        }
+
+        // Initialize models
         $shiftModel = new CashierShiftModel();
         $activeShift = $shiftModel->getLatestShiftByUser((string) $userId);
 
         if (!$activeShift || !empty($activeShift['closed_at'])) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Sesi kasir belum aktif. Silakan mulai sesi terlebih dahulu.'])->setStatusCode(403);
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => AppConstants::MSG_SHIFT_NOT_ACTIVE,
+            ])->setStatusCode(403);
         }
 
+        // Parse and validate request payload
         $payload = $this->request->getJSON(true);
         $cart = $payload['cart'] ?? [];
-        $paymentType = strtolower((string) ($payload['payment_type'] ?? 'tunai'));
-        $cashGiven = (float) ($payload['cash'] ?? 0);
+        $cashGiven = $payload['cash'] ?? null;
+        $paymentTypeInput = $payload['payment_type'] ?? null;
 
-        if (!is_array($cart) || empty($cart)) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Keranjang masih kosong.'])->setStatusCode(422);
+        // Validate cart structure
+        $cartValidation = validate_cart($cart);
+        if (!$cartValidation['valid']) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => $cartValidation['error'],
+            ])->setStatusCode(422);
         }
 
-        if (!in_array($paymentType, ['tunai', 'nontunai'], true)) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Metode pembayaran tidak valid.'])->setStatusCode(422);
+        // Validate payment type
+        $paymentValidation = validate_payment_type($paymentTypeInput);
+        if (!$paymentValidation['valid']) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => $paymentValidation['error'],
+            ])->setStatusCode(422);
+        }
+        $paymentType = $paymentValidation['value'];
+
+        // Validate cash amount for cash payment
+        if ($paymentType === AppConstants::PAYMENT_TYPE_CASH) {
+            $cashValidation = validate_amount($cashGiven, 0);
+            if (!$cashValidation['valid']) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => $cashValidation['error'],
+                ])->setStatusCode(422);
+            }
+            $cashGiven = $cashValidation['value'];
+        } else {
+            $cashGiven = 0;
         }
 
+        // Initialize models
         $productModel = new ProductModel();
         $transactionModel = new TransactionModel();
         $transactionDetailModel = new TransactionDetailModel();
@@ -157,17 +212,30 @@ class PosController extends BaseController
         $total = 0;
         $preparedItems = [];
 
+        // Validate all cart items and calculate total
         foreach ($cart as $item) {
             $productId = $item['id'] ?? null;
             $quantity = max(1, (int) ($item['qty'] ?? 0));
             $product = $productModel->find($productId);
 
             if (!$product) {
-                return $this->response->setJSON(['success' => false, 'message' => 'Ada produk yang tidak tersedia di stok.'])->setStatusCode(422);
+                log_transaction('warning', 'Product not found', ['productId' => $productId]);
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => AppConstants::MSG_PRODUCT_NOT_FOUND,
+                ])->setStatusCode(422);
             }
 
             if ((int) $product['stock'] < $quantity) {
-                return $this->response->setJSON(['success' => false, 'message' => 'Stok produk ' . $product['name'] . ' tidak mencukupi.'])->setStatusCode(422);
+                log_transaction('warning', 'Insufficient stock', [
+                    'productId' => $productId,
+                    'required' => $quantity,
+                    'available' => $product['stock'],
+                ]);
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => AppConstants::MSG_INSUFFICIENT_STOCK . ' (' . $product['name'] . ')',
+                ])->setStatusCode(422);
             }
 
             $price = (int) ($product['sell_price'] ?? 0);
@@ -182,175 +250,193 @@ class PosController extends BaseController
             ];
         }
 
-        if ($paymentType === 'tunai' && $cashGiven < $total) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Uang pembayaran customer kurang dari total transaksi.'])->setStatusCode(422);
+        // Validate cash sufficiency for cash payment
+        if ($paymentType === AppConstants::PAYMENT_TYPE_CASH && $cashGiven < $total) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => AppConstants::MSG_INSUFFICIENT_CASH,
+            ])->setStatusCode(422);
         }
 
+        // Generate transaction number
         $countToday = $transactionModel
             ->where('DATE(created_at)', date('Y-m-d'))
             ->countAllResults();
 
         $transactionNumber = 'TRX-' . date('Ymd') . '-' . str_pad((string) ($countToday + 1), 4, '0', STR_PAD_LEFT);
-        $payAmount = $paymentType === 'tunai' ? (int) round($cashGiven) : $total;
+        $payAmount = $paymentType === AppConstants::PAYMENT_TYPE_CASH ? (int) round($cashGiven) : $total;
         $change = max(0, $payAmount - $total);
 
-        $transactionInsert = [
-            'transaction_id' => $transactionNumber,
-            'user_id' => (string) $userId,
-            'member_id' => null,
-            'total' => $total,
-            'pay' => $payAmount,
-            'change' => $change,
-            'payment_type' => $paymentType,
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s'),
-        ];
+        // START DATABASE TRANSACTION
+        $database = \Config\Database::connect();
+        $database->transStart();
 
-        $inserted = $transactionModel->insert($transactionInsert);
-        if ($inserted === false) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Gagal menyimpan transaksi.'])->setStatusCode(500);
-        }
-
-        foreach ($preparedItems as $item) {
-            $transactionDetailModel->insert([
-                'transaction_id' => $inserted,
-                'product_id' => $item['product_id'],
-                'price' => $item['price'],
-                'quantity' => $item['qty'],
-                'subtotal' => $item['subtotal'],
+        try {
+            // Insert main transaction
+            $transactionInsert = [
+                'transaction_id' => $transactionNumber,
+                'user_id' => (string) $userId,
+                'member_id' => null,
+                'total' => $total,
+                'pay' => $payAmount,
+                'change' => $change,
+                'payment_type' => $paymentType,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
-            ]);
+            ];
 
-            $product = $productModel->find($item['product_id']);
-            if ($product) {
-                $productModel->update($item['product_id'], [
-                    'stock' => max(0, (int) $product['stock'] - $item['qty']),
+            $inserted = $transactionModel->insert($transactionInsert);
+            if ($inserted === false) {
+                throw new \RuntimeException('Gagal menyimpan data transaksi.');
+            }
+
+            // Insert transaction details dan update stock
+            foreach ($preparedItems as $item) {
+                $detailInserted = $transactionDetailModel->insert([
+                    'transaction_id' => $inserted,
+                    'product_id' => $item['product_id'],
+                    'price' => $item['price'],
+                    'quantity' => $item['qty'],
+                    'subtotal' => $item['subtotal'],
+                    'created_at' => date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]);
+
+                if ($detailInserted === false) {
+                    throw new \RuntimeException('Gagal menyimpan detail transaksi.');
+                }
+
+                // Update stock
+                $product = $productModel->find($item['product_id']);
+                if (!$product) {
+                    throw new \RuntimeException('Produk tidak ditemukan saat update stok.');
+                }
+
+                $newStock = max(0, (int) $product['stock'] - $item['qty']);
+                $updateResult = $productModel->update($item['product_id'], [
+                    'stock' => $newStock,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ]);
+
+                if ($updateResult === false) {
+                    throw new \RuntimeException('Gagal update stok produk.');
+                }
             }
+
+            // COMMIT TRANSACTION
+            $database->transComplete();
+
+            if ($database->transStatus() === false) {
+                throw new \RuntimeException('Transaksi database gagal.');
+            }
+
+            log_transaction('info', 'Checkout successful', [
+                'transactionId' => $transactionNumber,
+                'total' => $total,
+                'paymentType' => $paymentType,
+            ]);
+
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Transaksi berhasil disimpan.',
+                'invoice' => $transactionNumber,
+                'total' => $total,
+                'pay' => $payAmount,
+                'change' => $change,
+                'payment_type' => $paymentType,
+            ]);
+        } catch (\Exception $e) {
+            // ROLLBACK ON ERROR
+            $database->transRollback();
+
+            log_transaction('error', 'Checkout failed', [
+                'error' => $e->getMessage(),
+                'total' => $total,
+            ]);
+
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => AppConstants::MSG_TRANSACTION_FAILED,
+            ])->setStatusCode(500);
         }
-
-        return $this->response->setJSON([
-            'success' => true,
-            'message' => 'Transaksi berhasil disimpan.',
-            'invoice' => $transactionNumber,
-            'total' => $total,
-            'pay' => $payAmount,
-            'change' => $change,
-            'payment_type' => $paymentType,
-        ]);
-    }
-
-    public function shiftReport()
-    {
-        $session = session();
-        $userId = $session->get('id');
-
-        if (!$userId) {
-            return redirect()->to(base_url('login'))->with('error', 'Silakan login terlebih dahulu.');
-        }
-
-        $orderBy = $this->request->getGet('orderBy') ?? 'latest';
-        $startDate = $this->request->getGet('startDate');
-        $endDate = $this->request->getGet('endDate');
-
-        if (!empty($startDate) && empty($endDate)) {
-            $endDate = date('Y-m-d');
-        }
-
-        $shiftModel = new CashierShiftModel();
-        $transactionModel = new TransactionModel();
-        $today = date('Y-m-d');
-
-        $latestShift = $shiftModel->getLatestShiftByUser((string) $userId);
-        $shifts = $shiftModel->getShiftsByUser((string) $userId, $orderBy, $startDate, $endDate, 20, 'transactions');
-        $totalPenjualan = $transactionModel->getDailyTotal($today, (string) $userId);
-        $totalTunai = $transactionModel->getDailyTotalByPaymentType($today, 'tunai', (string) $userId);
-        $totalNonTunai = $transactionModel->getDailyTotalByPaymentType($today, 'nontunai', (string) $userId);
-        $jumlahTransaksi = $transactionModel->getDailyCount($today, (string) $userId);
-
-        $data = [
-            'cashier' => [
-                'name' => $session->get('name'),
-                'email' => $session->get('email'),
-            ],
-            'shift' => $latestShift,
-            'shifts' => $shifts,
-            'todaySales' => $totalPenjualan,
-            'cashSales' => $totalTunai,
-            'nonCashSales' => $totalNonTunai,
-            'transactionCount' => $jumlahTransaksi,
-            'orderBy' => $orderBy,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-            'pager' => $shiftModel->pager,
-            'title' => 'Rekap Shift Kasir',
-        ];
-
-        if ($this->request->isAJAX()) {
-            return view('cashier/partials/shift_table', $data);
-        }
-
-        return view('cashier/shift_report', $data);
     }
 
     public function searchByBarcode()
     {
         if (!$this->request->isAJAX()) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Invalid request method.'])->setStatusCode(405);
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Invalid request method.',
+            ])->setStatusCode(405);
         }
 
         $session = session();
         $userId = $session->get('id');
 
         if (!$userId) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Silakan login terlebih dahulu.'])->setStatusCode(401);
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => AppConstants::MSG_LOGIN_REQUIRED,
+            ])->setStatusCode(401);
+        }
+
+        // Validate authorization
+        if (!authorize_user_role(AppConstants::ROLE_KASIR)) {
+            log_transaction('warning', 'Unauthorized searchByBarcode attempt');
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => AppConstants::MSG_UNAUTHORIZED,
+            ])->setStatusCode(403);
         }
 
         $barcode = trim((string) $this->request->getPost('barcode'));
 
         if (empty($barcode)) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Barcode tidak boleh kosong.'])->setStatusCode(422);
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Barcode tidak boleh kosong.',
+            ])->setStatusCode(422);
         }
 
-        $productModel = new ProductModel();
-        
-        // Debug: Log barcode yang dicari
-        log_message('info', 'Searching barcode: ' . $barcode);
-        
-        $product = $productModel->getByBarcode($barcode);
-        
-        // Debug: Log hasil pencarian
-        log_message('info', 'Product found: ' . json_encode($product));
+        try {
+            $productModel = new ProductModel();
+            $product = $productModel->getByBarcode($barcode);
 
-        if (!$product) {
-            // Tambahan debugging: cek apakah ada di database tapi deleted
-            $allProducts = $productModel->builder()
-                ->where('barcode', $barcode)
-                ->get()
-                ->getResultArray();
-            
-            log_message('warning', 'Barcode ' . $barcode . ' not found (even in deleted). All matches: ' . json_encode($allProducts));
-            
-            return $this->response->setJSON(['success' => false, 'message' => 'Produk dengan barcode ini tidak ditemukan.'])->setStatusCode(404);
+            if (!$product) {
+                log_transaction('info', 'Barcode not found', ['barcode' => $barcode]);
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Produk dengan barcode ini tidak ditemukan.',
+                ])->setStatusCode(404);
+            }
+
+            if ((int) $product['stock'] <= 0) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Stok produk sudah habis.',
+                ])->setStatusCode(422);
+            }
+
+            log_transaction('info', 'Product found by barcode', ['barcode' => $barcode, 'productId' => $product['id']]);
+
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Produk ditemukan.',
+                'data' => [
+                    'id' => $product['id'],
+                    'name' => $product['name'],
+                    'price' => (int) $product['sell_price'],
+                    'stock' => (int) $product['stock'],
+                    'image' => $product['image'],
+                    'unit' => $product['unit'],
+                ],
+            ]);
+        } catch (\Exception $e) {
+            log_transaction('error', 'searchByBarcode exception', ['error' => $e->getMessage()]);
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat mencari produk.',
+            ])->setStatusCode(500);
         }
-
-        if ((int) $product['stock'] <= 0) {
-            return $this->response->setJSON(['success' => false, 'message' => 'Stok produk sudah habis.'])->setStatusCode(422);
-        }
-
-        return $this->response->setJSON([
-            'success' => true,
-            'message' => 'Produk ditemukan.',
-            'data' => [
-                'id' => $product['id'],
-                'name' => $product['name'],
-                'price' => (int) $product['sell_price'],
-                'stock' => (int) $product['stock'],
-                'image' => $product['image'],
-                'unit' => $product['unit'],
-            ],
-        ]);
     }
 }
