@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
     <script>
         window.posProducts = <?= json_encode($products ?? [], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP) ?>;
     </script>
@@ -78,6 +79,10 @@
                                 <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-stone-400">search</span>
                                 <input id="searchProduct" type="text" placeholder="Cari produk..." class="w-full rounded-full border border-stone-200 bg-stone-50 py-2.5 pl-10 pr-4 text-sm text-stone-700 shadow-sm outline-none transition focus:border-red-400 focus:ring-2 focus:ring-red-100 sm:w-72">
                             </div>
+                            <button id="openBarcodeScanner" type="button" class="inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-700 shadow-sm transition hover:bg-red-100">
+                                <span class="material-icons text-base">qr_code_2</span>
+                                Scan QR
+                            </button>
                         </div>
 
                         <div class="flex items-center gap-3">
@@ -295,5 +300,35 @@
     <script>
         const shiftState = <?= json_encode(['active' => (bool) ($shiftActive ?? false)]) ?>;
     </script>
+
+    <div id="barcodeScannerModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-stone-900/60 p-4 backdrop-blur-sm">
+        <div class="w-full max-w-lg rounded-3xl bg-white shadow-2xl">
+            <div class="flex items-center justify-between border-b border-stone-200 px-6 py-4">
+                <div>
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.24em] text-red-600">Scan Produk</p>
+                    <h3 class="mt-2 text-2xl font-bold text-stone-900">Pemindai Barcode</h3>
+                </div>
+                <button id="closeBarcodeScanner" type="button" class="flex h-10 w-10 items-center justify-center rounded-full border border-stone-200 text-stone-600 transition hover:bg-stone-100">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+
+            <div class="p-6">
+                <div id="qr-reader" class="w-full overflow-hidden rounded-2xl border-2 border-stone-200"></div>
+                
+                <div class="mt-4 space-y-3">
+                    <div>
+                        <label for="barcodeManualInput" class="mb-2 block text-sm font-semibold text-stone-700">Atau masukkan barcode manual:</label>
+                        <input id="barcodeManualInput" type="text" placeholder="Masukkan barcode..." class="w-full rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-base text-stone-800 outline-none transition focus:border-red-400 focus:ring-2 focus:ring-red-100">
+                    </div>
+                    <button id="submitBarcodeManual" type="button" class="w-full rounded-2xl bg-red-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-red-700">
+                        Cari Produk
+                    </button>
+                </div>
+
+                <div id="scannerStatus" class="mt-4 rounded-2xl bg-stone-50 p-4 text-center text-sm text-stone-600"></div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -294,4 +294,63 @@ class PosController extends BaseController
 
         return view('cashier/shift_report', $data);
     }
+
+    public function searchByBarcode()
+    {
+        if (!$this->request->isAJAX()) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Invalid request method.'])->setStatusCode(405);
+        }
+
+        $session = session();
+        $userId = $session->get('id');
+
+        if (!$userId) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Silakan login terlebih dahulu.'])->setStatusCode(401);
+        }
+
+        $barcode = trim((string) $this->request->getPost('barcode'));
+
+        if (empty($barcode)) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Barcode tidak boleh kosong.'])->setStatusCode(422);
+        }
+
+        $productModel = new ProductModel();
+        
+        // Debug: Log barcode yang dicari
+        log_message('info', 'Searching barcode: ' . $barcode);
+        
+        $product = $productModel->getByBarcode($barcode);
+        
+        // Debug: Log hasil pencarian
+        log_message('info', 'Product found: ' . json_encode($product));
+
+        if (!$product) {
+            // Tambahan debugging: cek apakah ada di database tapi deleted
+            $allProducts = $productModel->builder()
+                ->where('barcode', $barcode)
+                ->get()
+                ->getResultArray();
+            
+            log_message('warning', 'Barcode ' . $barcode . ' not found (even in deleted). All matches: ' . json_encode($allProducts));
+            
+            return $this->response->setJSON(['success' => false, 'message' => 'Produk dengan barcode ini tidak ditemukan.'])->setStatusCode(404);
+        }
+
+        if ((int) $product['stock'] <= 0) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Stok produk sudah habis.'])->setStatusCode(422);
+        }
+
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Produk ditemukan.',
+            'data' => [
+                'id' => $product['id'],
+                'name' => $product['name'],
+                'price' => (int) $product['sell_price'],
+                'stock' => (int) $product['stock'],
+                'image' => $product['image'],
+                'unit' => $product['unit'],
+            ],
+        ]);
+    }
 }
