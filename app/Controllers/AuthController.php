@@ -65,11 +65,8 @@ class AuthController extends BaseController
 
     public function logout()
     {
-        $session = session();
-        $session->remove(['id', 'name', 'email', 'role', 'isLoggedIn']);
-        $session->regenerate(true);
-        $session->setFlashdata('success', 'Anda telah berhasil keluar dari sistem.');
+        session()->destroy();
 
-        return redirect()->to('/login');
+        return redirect()->to('/login?logout=1');
     }
 }
