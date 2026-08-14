@@ -1,4 +1,9 @@
-<?php $successMessage = session()->getFlashdata('success'); ?>
+<?php
+$successMessage = session()->getFlashdata('success');
+if (! $successMessage && service('request')->getGet('logout') === '1') {
+    $successMessage = 'Anda telah berhasil keluar dari sistem.';
+}
+?>
 <?php if ($successMessage): ?>
 <div id="success-notification" role="status" aria-live="assertive" class="fixed inset-x-4 top-4 z-50 mx-auto max-w-xl rounded-3xl border border-emerald-200 bg-emerald-50 px-4 py-4 shadow-2xl shadow-emerald-950/10 text-emerald-950 backdrop-blur-sm sm:left-auto sm:right-4 sm:max-w-md transition-opacity duration-300">
     <div class="flex items-start gap-3">
