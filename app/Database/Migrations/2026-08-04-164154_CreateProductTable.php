@@ -22,6 +22,13 @@ class CreateProductsTable extends Migration
                 'constraint' => 36,
                 'null' => true,
             ],
+            'barcode' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 50,
+                'null'       => true,
+                'unique'     => true,
+                'comment'    => '13-digit barcode (EAN-13 format), nullable',
+            ],
             'buy_price' => [
                 'type'       => 'INT',
                 'constraint' => 20,

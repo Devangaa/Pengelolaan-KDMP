@@ -299,6 +299,199 @@ document.addEventListener('DOMContentLoaded', function () {
         changePreview.textContent = formatCurrency(Math.max(0, base - total));
     }
 
+    // Barcode Scanner Implementation
+    let html5QrcodeScanner = null;
+
+    function initBarcodeScanner() {
+        if (html5QrcodeScanner !== null) {
+            return;
+        }
+
+        try {
+            html5QrcodeScanner = new Html5Qrcode('qr-reader');
+            const statusEl = document.getElementById('scannerStatus');
+            if (statusEl) {
+                statusEl.textContent = 'Izinkan akses ke kamera untuk memulai scanning...';
+            }
+        } catch (error) {
+            console.error('Error initializing scanner:', error);
+        }
+    }
+
+    function startBarcodeScanner() {
+        if (!html5QrcodeScanner) {
+            initBarcodeScanner();
+        }
+
+        try {
+            const statusEl = document.getElementById('scannerStatus');
+            
+            Html5Qrcode.getCameras()
+                .then((cameras) => {
+                    if (cameras && cameras.length) {
+                        const backCamera = cameras.find((c) => c.label.toLowerCase().includes('back')) || cameras[0];
+                        html5QrcodeScanner.start(
+                            backCamera.id,
+                            {
+                                fps: 10,
+                                qrbox: 300,
+                            },
+                            (decodedText) => {
+                                handleBarcodeScanned(decodedText);
+                            },
+                            (error) => {
+                                // Ignore errors during scanning
+                            }
+                        ).catch((err) => {
+                            console.error('Error starting camera:', err);
+                            if (statusEl) {
+                                statusEl.textContent = 'Gagal mengakses kamera. Silakan masukkan barcode manual.';
+                                statusEl.classList.add('text-red-600', 'bg-red-50', 'border-red-200');
+                            }
+                        });
+
+                        if (statusEl) {
+                            statusEl.textContent = 'Scanner aktif - arahkan barcode ke kamera';
+                            statusEl.classList.remove('text-red-600', 'bg-red-50', 'border-red-200');
+                        }
+                    } else {
+                        if (statusEl) {
+                            statusEl.textContent = 'Kamera tidak ditemukan. Gunakan input manual.';
+                            statusEl.classList.add('text-red-600', 'bg-red-50', 'border-red-200');
+                        }
+                    }
+                })
+                .catch((err) => {
+                    console.error('Error getting cameras:', err);
+                    if (statusEl) {
+                        statusEl.textContent = 'Gagal mengakses kamera. Silakan masukkan barcode manual.';
+                        statusEl.classList.add('text-red-600', 'bg-red-50', 'border-red-200');
+                    }
+                });
+        } catch (error) {
+            console.error('Error in startBarcodeScanner:', error);
+        }
+    }
+
+    function stopBarcodeScanner() {
+        if (html5QrcodeScanner && html5QrcodeScanner.isScanning) {
+            html5QrcodeScanner.stop()
+                .then(() => {
+                    // Successfully stopped
+                })
+                .catch((error) => {
+                    console.error('Error stopping scanner:', error);
+                });
+        }
+    }
+
+    function handleBarcodeScanned(barcode) {
+        barcode = barcode.trim();
+        if (!barcode) {
+            return;
+        }
+
+        // Stop scanning after successful read
+        stopBarcodeScanner();
+
+        // Search for product by barcode
+        searchProductByBarcode(barcode);
+    }
+
+    async function searchProductByBarcode(barcode) {
+        try {
+            const response = await fetch('pos/cari-barcode', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': csrfValue || '',
+                    'X-CSRF-Name': csrfName || 'csrf_test_name',
+                },
+                body: new URLSearchParams({
+                    barcode: barcode,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                showToast('error', result.message || 'Produk tidak ditemukan.');
+                // Restart scanner for retry
+                startBarcodeScanner();
+                return;
+            }
+
+            // Add product to cart
+            const product = result.data;
+            const cart = getCart();
+            const existingItem = cart.find((item) => String(item.id) === String(product.id));
+
+            if (existingItem) {
+                // Increment quantity if product already in cart
+                const stock = Number(product.stock || 0);
+                if (Number(existingItem.qty) < stock) {
+                    existingItem.qty = Number(existingItem.qty || 1) + 1;
+                    saveCart(cart);
+                    showToast('success', `${product.name} ditambahkan. Jumlah: ${existingItem.qty}`);
+                } else {
+                    showToast('error', `Stok ${product.name} sudah maksimal.`);
+                }
+            } else {
+                // Add new product to cart
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: Number(product.price || 0),
+                    qty: 1,
+                });
+                saveCart(cart);
+                showToast('success', `${product.name} ditambahkan ke keranjang.`);
+            }
+
+            renderCart();
+            renderProducts();
+
+            // Close scanner modal after successful add
+            const modal = document.getElementById('barcodeScannerModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        } catch (error) {
+            console.error('Error searching product:', error);
+            showToast('error', 'Terjadi kesalahan saat mencari produk.');
+            startBarcodeScanner();
+        }
+    }
+
+    function openBarcodeScanner() {
+        const modal = document.getElementById('barcodeScannerModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // Clear manual input
+            const manualInput = document.getElementById('barcodeManualInput');
+            if (manualInput) {
+                manualInput.value = '';
+            }
+            // Initialize and start scanner
+            setTimeout(() => {
+                startBarcodeScanner();
+            }, 100);
+        }
+    }
+
+    function closeBarcodeScanner() {
+        stopBarcodeScanner();
+        const modal = document.getElementById('barcodeScannerModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+    }
+
+
     function showPaymentSuccess(invoice, change) {
         const modal = document.getElementById('paymentSuccessModal');
         const invoiceEl = document.getElementById('successInvoice');
@@ -323,6 +516,34 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     searchProduct?.addEventListener('input', renderProducts);
+
+    // Barcode Scanner Event Listeners
+    document.getElementById('openBarcodeScanner')?.addEventListener('click', openBarcodeScanner);
+    document.getElementById('closeBarcodeScanner')?.addEventListener('click', closeBarcodeScanner);
+
+    document.getElementById('submitBarcodeManual')?.addEventListener('click', () => {
+        const input = document.getElementById('barcodeManualInput');
+        const barcode = input?.value.trim();
+        if (!barcode) {
+            showToast('error', 'Silakan masukkan barcode.');
+            return;
+        }
+        searchProductByBarcode(barcode);
+    });
+
+    document.getElementById('barcodeManualInput')?.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            document.getElementById('submitBarcodeManual')?.click();
+        }
+    });
+
+    // Close scanner modal when clicking outside
+    document.getElementById('barcodeScannerModal')?.addEventListener('click', (event) => {
+        if (event.target.id === 'barcodeScannerModal') {
+            closeBarcodeScanner();
+        }
+    });
+
 
     const handleCartActions = (event) => {
         const removeButton = event.target.closest('.remove-item');

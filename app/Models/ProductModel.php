@@ -20,6 +20,7 @@ class ProductModel extends BaseModel
         'unit',
         'description',
         'image',
+        'barcode',
     ];
 
     // Dates
@@ -39,6 +40,7 @@ class ProductModel extends BaseModel
         'unit' => 'required|max_length[20]',
         'description' => 'permit_empty|max_length[255]',
         'image' => 'permit_empty|is_image[image]|max_size[image,1024]|ext_in[image,png,jpg,jpeg,gif,webp]',
+        'barcode' => 'permit_empty|max_length[50]|is_unique[products.barcode]',
     ];
     protected $validationMessages   = [
         'name' => [
@@ -75,6 +77,10 @@ class ProductModel extends BaseModel
             'is_image' => 'File harus berupa gambar.',
             'max_size' => 'Ukuran gambar maksimal 1MB.',
             'ext_in' => 'Format gambar harus berupa PNG, JPG, JPEG, GIF, atau WEBP.',
+        ],
+        'barcode' => [
+            'max_length' => 'Barcode maksimal 50 karakter.',
+            'is_unique' => 'Barcode sudah digunakan oleh produk lain.',
         ],
     ];
 
@@ -124,5 +130,15 @@ class ProductModel extends BaseModel
             ->limit($limit)
             ->get()
             ->getResultArray();
+    }
+
+    public function getByBarcode(string $barcode)
+    {
+        // Gunakan builder baru untuk menghindari state contamination
+        return $this->builder()
+            ->where('barcode', $barcode)
+            ->where('deleted_at', null)
+            ->get()
+            ->getFirstRow('array');
     }
 }

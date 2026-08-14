@@ -32,6 +32,7 @@ $routes->group('', ['filter' => 'role:kasir'], static function ($routes) {
     $routes->post('pos/mulai-shift', 'Cashier\PosController::startShift');
     $routes->post('pos/tutup-shift', 'Cashier\PosController::closeShift');
     $routes->post('pos/checkout', 'Cashier\PosController::checkout');
+    $routes->post('pos/cari-barcode', 'Cashier\PosController::searchByBarcode');
 
     $routes->get('rekap_shift', 'Cashier\PosController::shiftReport');
 });
