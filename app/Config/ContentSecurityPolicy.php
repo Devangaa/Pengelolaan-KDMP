@@ -56,17 +56,29 @@ class ContentSecurityPolicy extends BaseConfig
 
     /**
      * Lists allowed scripts' URLs.
+     * Allows: self, Tailwind CDN, jsDelivr CDN, Cloudflare CDN
      *
      * @var list<string>|string
      */
-    public $scriptSrc = 'self';
+    public $scriptSrc = [
+        'self',
+        'cdn.tailwindcss.com',
+        'cdnjs.cloudflare.com',
+        'cdn.jsdelivr.net',
+    ];
 
     /**
      * Specifies valid sources for JavaScript <script> elements.
+     * Allows: self, Tailwind CDN, jsDelivr CDN, Cloudflare CDN
      *
      * @var list<string>|string
      */
-    public array|string $scriptSrcElem = 'self';
+    public array|string $scriptSrcElem = [
+        'self',
+        'cdn.tailwindcss.com',
+        'cdnjs.cloudflare.com',
+        'cdn.jsdelivr.net',
+    ];
 
     /**
      * Specifies valid sources for JavaScript inline event
@@ -78,32 +90,57 @@ class ContentSecurityPolicy extends BaseConfig
 
     /**
      * Lists allowed stylesheets' URLs.
+     * Allows: self, Google Fonts, Tailwind CDN, jsDelivr CDN
      *
      * @var list<string>|string
      */
-    public $styleSrc = 'self';
+    public $styleSrc = [
+        'self',
+        'fonts.googleapis.com',
+        'cdn.tailwindcss.com',
+        'cdn.jsdelivr.net',
+    ];
 
     /**
      * Specifies valid sources for stylesheets <link> elements.
+     * Allows: self, Google Fonts, Tailwind CDN, jsDelivr CDN
+     * unsafe-inline: Required for Tailwind CDN (which dynamically injects styles)
+     *
+     * NOTE: For production, use Tailwind via PostCSS/CLI instead of CDN
+     * to avoid unsafe-inline and get better CSP compliance.
      *
      * @var list<string>|string
      */
-    public array|string $styleSrcElem = 'self';
+    public array|string $styleSrcElem = [
+        'self',
+        'fonts.googleapis.com',
+        'cdn.tailwindcss.com',
+        'cdn.jsdelivr.net',
+        'unsafe-inline',  // Needed for Tailwind CDN dynamic style injection
+    ];
 
     /**
      * Specifies valid sources for stylesheets inline
      * style attributes and `<style>` elements.
+     * unsafe-inline: Required for Tailwind CDN dynamic styles
      *
      * @var list<string>|string
      */
-    public array|string $styleSrcAttr = 'self';
+    public array|string $styleSrcAttr = [
+        'self',
+        'unsafe-inline',  // Tailwind CDN needs this
+    ];
 
     /**
      * Defines the origins from which images can be loaded.
+     * Allows: self and all HTTPS images (for external resources)
      *
      * @var list<string>|string
      */
-    public $imageSrc = 'self';
+    public $imageSrc = [
+        'self',
+        'https:',  // Allow all HTTPS images (Google Icons, Material Icons, etc.)
+    ];
 
     /**
      * Restricts the URLs that can appear in a page's `<base>` element.
@@ -124,17 +161,26 @@ class ContentSecurityPolicy extends BaseConfig
     /**
      * Limits the origins that you can connect to (via XHR,
      * WebSockets, and EventSource).
+     * Allows: self and HTTPS for external APIs
      *
      * @var list<string>|string
      */
-    public $connectSrc = 'self';
+    public $connectSrc = [
+        'self',
+        'https:',  // Allow HTTPS connections for API calls
+    ];
 
     /**
      * Specifies the origins that can serve web fonts.
+     * Allows: Google Fonts and Material Icons
      *
      * @var list<string>|string
      */
-    public $fontSrc;
+    public $fontSrc = [
+        'self',
+        'fonts.googleapis.com',
+        'fonts.gstatic.com',  // Google Fonts static
+    ];
 
     /**
      * Lists valid endpoints for submission from `<form>` tags.

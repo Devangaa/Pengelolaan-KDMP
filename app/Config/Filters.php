@@ -79,8 +79,8 @@ class Filters extends BaseFilters
             // 'invalidchars',
         ],
         'after' => [
+            'secureheaders',  // Enable Secure Headers (X-Frame-Options, HSTS, CSP, etc.)
             // 'honeypot',
-            // 'secureheaders',
         ],
     ];
 

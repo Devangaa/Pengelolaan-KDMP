@@ -24,8 +24,31 @@ document.addEventListener('DOMContentLoaded', function () {
     const endShiftButton = document.getElementById('endShiftButton');
     const cashInput = document.getElementById('cashInput');
     const changePreview = document.getElementById('changePreview');
-    const csrfName = document.querySelector('meta[name="csrf-name"]')?.getAttribute('content');
-    const csrfValue = document.querySelector('meta[name="csrf-value"]')?.getAttribute('content');
+    const csrfName = document.querySelector('meta[name="csrf-name"]')?.getAttribute('content') || 'csrf_test_name';
+
+    function getCurrentCsrfToken() {
+        // CodeIgniter cookie-based CSRF uses the raw cookie value for the cookie itself,
+        // but when tokenRandomize = true, the browser must send the randomized token
+        // generated for the current page. The raw cookie is not valid for the request.
+        const currentToken = document.querySelector('meta[name="csrf-value"]')?.getAttribute('content');
+
+        if (currentToken) {
+            return currentToken;
+        }
+
+        const cookieName = 'kdmp_csrf';
+        const match = document.cookie.match(new RegExp('(?:^|; )' + cookieName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : '';
+    }
+
+    function getCsrfHeaders() {
+        const currentToken = getCurrentCsrfToken();
+        return {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': currentToken,
+        };
+    }
 
     const formatCurrency = (value) => new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -400,16 +423,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function searchProductByBarcode(barcode) {
         try {
+            const token = getCurrentCsrfToken();
             const response = await fetch('pos/cari-barcode', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': csrfValue || '',
-                    'X-CSRF-Name': csrfName || 'csrf_test_name',
-                },
+                headers: getCsrfHeaders(),
                 body: new URLSearchParams({
                     barcode: barcode,
+                    [csrfName]: token,
                 }),
             });
 
@@ -674,15 +694,18 @@ document.addEventListener('DOMContentLoaded', function () {
             cash: Number(formData.get('cash') || 0),
         };
 
+        const token = getCurrentCsrfToken();
         const response = await fetch('pos/checkout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': csrfValue || '',
-                'X-CSRF-Name': csrfName || 'csrf_test_name',
+                'X-CSRF-TOKEN': token,
             },
-            body: JSON.stringify(payload),
+            body: JSON.stringify({
+                ...payload,
+                [csrfName]: token,
+            }),
         });
 
         const result = await response.json();
@@ -692,12 +715,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        const data = result.data || {};
+
         localStorage.removeItem(storageKey);
         renderCart();
         renderProducts();
         togglePaymentModal(false);
         document.getElementById('paymentForm').reset();
-        showPaymentSuccess(result.invoice, result.change);
+        showPaymentSuccess(data.invoice, data.change);
     });
 
     endShiftButton?.addEventListener('click', () => {

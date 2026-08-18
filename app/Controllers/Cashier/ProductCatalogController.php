@@ -11,77 +11,97 @@ class ProductCatalogController extends BaseController
 {
     public function index()
     {
-        $session = session();
-        $userId = $session->get('id');
+        try {
+            $session = session();
+            $userId = $session->get('id');
 
-        if (!$userId) {
-            return redirect()->to(base_url('login'))->with('error', AppConstants::MSG_LOGIN_REQUIRED);
+            if (!$userId) {
+                return html_error_response(AppConstants::MSG_LOGIN_REQUIRED, base_url('login'));
+            }
+
+            // Validate authorization
+            if (!authorize_user_role(AppConstants::ROLE_KASIR)) {
+                log_transaction('warning', 'Unauthorized product catalog access');
+                return html_error_response(AppConstants::MSG_UNAUTHORIZED, base_url('dasbor'));
+            }
+
+            $productModel = new ProductModel();
+            $categoryModel = new ProductCategoryModel();
+
+            $categoryIdValidation = validate_category_id($this->request->getGet('category'));
+            $categoryId = $categoryIdValidation['valid'] ? $categoryIdValidation['value'] : null;
+
+            $searchValidation = validate_search_keyword($this->request->getGet('q'));
+            $search = $searchValidation['valid'] ? $searchValidation['value'] : null;
+
+            $sortValidation = validate_sort($this->request->getGet('sort') ?? 'popular');
+            $sort = $sortValidation['valid'] ? $sortValidation['value'] : 'popular';
+
+            $perPage = 20;
+
+            $products = $productModel
+                ->getFilteredProducts($categoryId, $search, $sort)
+                ->paginate($perPage, 'products');
+
+            $pager = $productModel->pager;
+
+            $data = [
+                'title'            => page_title('Katalog Produk'),
+                'categories'       => $categoryModel->findAll(),
+                'products'         => $products,
+                'pager'            => $pager,
+                'selectedCategory' => $categoryId,
+                'searchKeyword'    => $search,
+                'selectedSort'     => $sort,
+                'cashier'          => current_cashier_data(),
+            ];
+
+            return view('cashier/product_catalog', $data);
+        } catch (\Exception $e) {
+            log_transaction('error', 'Product catalog index failed', ['error' => $e->getMessage()]);
+            return html_error_response('Terjadi kesalahan saat memuat katalog produk.', base_url('dasbor'));
         }
-
-        // Validate authorization
-        if (!authorize_user_role(AppConstants::ROLE_KASIR)) {
-            log_transaction('warning', 'Unauthorized product catalog access');
-            return redirect()->to(base_url('dasbor'))->with('error', AppConstants::MSG_UNAUTHORIZED);
-        }
-
-        $productModel = new ProductModel();
-        $categoryModel = new ProductCategoryModel();
-
-        $categoryId = $this->request->getGet('category');
-        $search     = $this->request->getGet('q');
-        $sort       = $this->request->getGet('sort') ?? 'popular';
-
-        $perPage = 20;
-
-        $products = $productModel
-            ->getFilteredProducts($categoryId, $search, $sort)
-            ->paginate($perPage, 'products');
-
-        $pager = $productModel->pager;
-
-        $data = [
-            'title'            => page_title('Katalog Produk'),
-            'categories'       => $categoryModel->findAll(),
-            'products'         => $products,
-            'pager'            => $pager,
-            'selectedCategory' => $categoryId,
-            'searchKeyword'    => $search,
-            'selectedSort'     => $sort,
-            'cashier'          => current_cashier_data(),
-        ];
-
-        return view('cashier/product_catalog', $data);
     }
 
     public function filterProducts()
     {
-        $productModel = new ProductModel();
-        $categoryModel = new ProductCategoryModel();
+        try {
+            $productModel = new ProductModel();
+            $categoryModel = new ProductCategoryModel();
 
-        $categoryId = $this->request->getGet('category');
-        $search     = $this->request->getGet('q');
-        $sort       = $this->request->getGet('sort') ?? 'popular';
+            $categoryIdValidation = validate_category_id($this->request->getGet('category'));
+            $categoryId = $categoryIdValidation['valid'] ? $categoryIdValidation['value'] : null;
 
-        $perPage = 20;
+            $searchValidation = validate_search_keyword($this->request->getGet('q'));
+            $search = $searchValidation['valid'] ? $searchValidation['value'] : null;
 
-        $products = $productModel
-            ->getFilteredProducts($categoryId, $search, $sort)
-            ->paginate($perPage, 'products');
+            $sortValidation = validate_sort($this->request->getGet('sort') ?? 'popular');
+            $sort = $sortValidation['valid'] ? $sortValidation['value'] : 'popular';
 
-        $pager = $productModel->pager;
-        $pager->only(['category', 'q', 'sort']);
-        $pager->setPath('katalog/saring');
+            $perPage = 20;
 
-        $data = [
-            'products' => $products,
-            'pager'    => $pager,
-            'categories' => $categoryModel->findAll(),
-            'selectedCategory' => $categoryId,
-            'searchKeyword' => $search,
-            'selectedSort' => $sort,
-            'filterAction' => base_url('katalog/saring'),
-        ];
+            $products = $productModel
+                ->getFilteredProducts($categoryId, $search, $sort)
+                ->paginate($perPage, 'products');
 
-        return view('partials/product_list', $data);
+            $pager = $productModel->pager;
+            $pager->only(['category', 'q', 'sort']);
+            $pager->setPath('katalog/saring');
+
+            $data = [
+                'products' => $products,
+                'pager'    => $pager,
+                'categories' => $categoryModel->findAll(),
+                'selectedCategory' => $categoryId,
+                'searchKeyword' => $search,
+                'selectedSort' => $sort,
+                'filterAction' => base_url('katalog/saring'),
+            ];
+
+            return view('partials/product_list', $data);
+        } catch (\Exception $e) {
+            log_transaction('error', 'Product filter failed', ['error' => $e->getMessage()]);
+            return html_error_response('Terjadi kesalahan saat memfilter produk.', base_url('katalog'));
+        }
     }
 }

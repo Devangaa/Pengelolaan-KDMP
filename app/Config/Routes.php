@@ -10,14 +10,13 @@ $routes->group('', ['filter' => 'guest'], static function ($routes) {
     $routes->get('/tentang-kami', 'GuestController::about');
     
     $routes->get('login', 'AuthController::login');
-    $routes->post('login', 'AuthController::loginProcess');
+    $routes->post('login', 'AuthController::loginProcess', ['filter' => 'csrf']);
     $routes->get('/lupa-kata-sandi', 'AuthController::forgotPassword');
 });
 
-$routes->get('logout', 'AuthController::logout');
-
 $routes->group('', ['filter' => 'role'], static function ($routes) {
     $routes->get('dasbor', 'DashboardController::index');
+    $routes->post('logout', 'AuthController::logout', ['filter' => 'csrf']);
 });
 
 $routes->group('', ['filter' => 'role:kasir'], static function ($routes) {
@@ -29,9 +28,9 @@ $routes->group('', ['filter' => 'role:kasir'], static function ($routes) {
     $routes->get('transaksi/(:segment)/nota', 'Cashier\TransactionController::downloadNota/$1');   
 
     $routes->get('pos', 'Cashier\PosController::index');
-    $routes->post('pos/mulai-shift', 'Cashier\PosController::startShift');
-    $routes->post('pos/tutup-shift', 'Cashier\PosController::closeShift');
-    $routes->post('pos/checkout', 'Cashier\PosController::checkout');
+    $routes->post('pos/mulai-shift', 'Cashier\PosController::startShift', ['filter' => 'csrf']);
+    $routes->post('pos/tutup-shift', 'Cashier\PosController::closeShift', ['filter' => 'csrf']);
+    $routes->post('pos/checkout', 'Cashier\PosController::checkout', ['filter' => 'csrf']);
     $routes->post('pos/cari-barcode', 'Cashier\PosController::searchByBarcode');
 
     $routes->get('rekap_shift', 'Cashier\ShiftReportController::index');

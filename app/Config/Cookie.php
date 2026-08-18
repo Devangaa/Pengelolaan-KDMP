@@ -54,16 +54,18 @@ class Cookie extends BaseConfig
      *
      * Cookie will only be set if a secure HTTPS connection exists.
      */
-    public bool $secure = false;
+    public bool $secure = (ENVIRONMENT === 'production');
 
     /**
      * --------------------------------------------------------------------------
      * Cookie HTTPOnly
      * --------------------------------------------------------------------------
      *
-     * Cookie will only be accessible via HTTP(S) (no JavaScript).
+     * Set to false so JavaScript can read the current CSRF token value and
+     * send it on AJAX requests. This is required when using cookie-based
+     * CSRF protection with fetch/XHR in the browser.
      */
-    public bool $httponly = true;
+    public bool $httponly = false;
 
     /**
      * --------------------------------------------------------------------------

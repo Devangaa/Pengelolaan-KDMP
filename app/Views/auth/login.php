@@ -49,6 +49,7 @@
                     <?php endif; ?>
 
                     <form class="mt-8 space-y-5" action="<?= base_url('login') ?>" method="post">
+                        <?= csrf_field() ?>
                         <div>
                             <label for="email" class="mb-2 block text-sm font-medium text-stone-700">Email</label>
                             <input

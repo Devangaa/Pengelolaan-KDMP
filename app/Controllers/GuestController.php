@@ -18,70 +18,95 @@ class GuestController extends BaseController
 
     public function index()
     {
-        $featuredProducts = $this->productModel->getPopularProducts(10);
+        try {
+            $featuredProducts = $this->productModel->getPopularProducts(10);
 
-        $data = [
-            'title'            => page_title('Beranda'),
-            'featuredProducts' => $featuredProducts,
-            'popular_products' => $featuredProducts,
-            'categories'       => $this->productCategoryModel->findAll(),
-        ];
+            $data = [
+                'title'            => page_title('Beranda'),
+                'featuredProducts' => $featuredProducts,
+                'popular_products' => $featuredProducts,
+                'categories'       => $this->productCategoryModel->findAll(),
+            ];
 
-        return view('guest/home', $data);
+            return view('guest/home', $data);
+        } catch (\Exception $e) {
+            log_transaction('error', 'Guest home page failed', ['error' => $e->getMessage()]);
+            return html_error_response('Terjadi kesalahan saat memuat beranda.', base_url('/'));
+        }
     }
 
     public function products()
     {
-        $categoryId = $this->request->getGet('category');
-        $search     = $this->request->getGet('q');
-        $sort       = $this->request->getGet('sort') ?? 'popular';
+        try {
+            $categoryIdValidation = validate_category_id($this->request->getGet('category'));
+            $categoryId = $categoryIdValidation['valid'] ? $categoryIdValidation['value'] : null;
 
-        $perPage = 20;
+            $searchValidation = validate_search_keyword($this->request->getGet('q'));
+            $search = $searchValidation['valid'] ? $searchValidation['value'] : null;
 
-        $products = $this->productModel
-            ->getFilteredProducts($categoryId, $search, $sort)
-            ->paginate($perPage, 'products');
+            $sortValidation = validate_sort($this->request->getGet('sort') ?? 'popular');
+            $sort = $sortValidation['valid'] ? $sortValidation['value'] : 'popular';
 
-        $data = [
-            'title'            => page_title('Katalog Produk'),
-            'categories'       => $this->productCategoryModel->findAll(),
-            'products'         => $products,
-            'pager'            => $this->productModel->pager,
-            'selectedCategory' => $categoryId,
-            'searchKeyword'    => $search,
-            'selectedSort'     => $sort,
-        ];
+            $perPage = 20;
 
-        return view('guest/products', $data);
+            $products = $this->productModel
+                ->getFilteredProducts($categoryId, $search, $sort)
+                ->paginate($perPage, 'products');
+
+            $data = [
+                'title'            => page_title('Katalog Produk'),
+                'categories'       => $this->productCategoryModel->findAll(),
+                'products'         => $products,
+                'pager'            => $this->productModel->pager,
+                'selectedCategory' => $categoryId,
+                'searchKeyword'    => $search,
+                'selectedSort'     => $sort,
+            ];
+
+            return view('guest/products', $data);
+        } catch (\Exception $e) {
+            log_transaction('error', 'Guest products page failed', ['error' => $e->getMessage()]);
+            return html_error_response('Terjadi kesalahan saat memuat katalog produk.', base_url('/'));
+        }
     }
 
     public function filterProducts()
     {
-        $categoryId = $this->request->getGet('category');
-        $search     = $this->request->getGet('q');
-        $sort       = $this->request->getGet('sort') ?? 'popular';
+        try {
+            $categoryIdValidation = validate_category_id($this->request->getGet('category'));
+            $categoryId = $categoryIdValidation['valid'] ? $categoryIdValidation['value'] : null;
 
-        $perPage = 20;
+            $searchValidation = validate_search_keyword($this->request->getGet('q'));
+            $search = $searchValidation['valid'] ? $searchValidation['value'] : null;
 
-        $products = $this->productModel
-            ->getFilteredProducts($categoryId, $search, $sort)
-            ->paginate($perPage, 'products');
+            $sortValidation = validate_sort($this->request->getGet('sort') ?? 'popular');
+            $sort = $sortValidation['valid'] ? $sortValidation['value'] : 'popular';
 
-        $pager = $this->productModel->pager;
-        $pager->only(['category', 'q', 'sort']);
+            $perPage = 20;
 
-        $pager->setPath('products/filter');
+            $products = $this->productModel
+                ->getFilteredProducts($categoryId, $search, $sort)
+                ->paginate($perPage, 'products');
 
-        $data = [
-            'products'         => $products,
-            'pager'            => $pager,
-            'categories'       => $this->productCategoryModel->findAll(),
-            'selectedCategory' => $categoryId,
-            'searchKeyword'    => $search,
-            'selectedSort'     => $sort,
-        ];
+            $pager = $this->productModel->pager;
+            $pager->only(['category', 'q', 'sort']);
 
-        return view('partials/product_list', $data);
+            $pager->setPath('products/filter');
+
+            $data = [
+                'products'         => $products,
+                'pager'            => $pager,
+                'categories'       => $this->productCategoryModel->findAll(),
+                'selectedCategory' => $categoryId,
+                'searchKeyword'    => $search,
+                'selectedSort'     => $sort,
+            ];
+
+            return view('partials/product_list', $data);
+        } catch (\Exception $e) {
+            log_transaction('error', 'Guest filter products failed', ['error' => $e->getMessage()]);
+            return html_error_response('Terjadi kesalahan saat memfilter produk.', base_url('products'));
+        }
     }
 
     public function about()

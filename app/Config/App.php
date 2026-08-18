@@ -193,10 +193,13 @@ class App extends BaseConfig
      * `ContentSecurityPolicy.php` file. Controllers can always add to those
      * restrictions at run time.
      *
+     * Disabled in development (http://localhost) to avoid mixed content issues
+     * with HTTPS CDN resources. Enabled in production (https).
+     *
      * For a better understanding of CSP, see these documents:
      *
      * @see http://www.html5rocks.com/en/tutorials/security/content-security-policy/
      * @see http://www.w3.org/TR/CSP/
      */
-    public bool $CSPEnabled = false;
+    public bool $CSPEnabled = (ENVIRONMENT === 'production');
 }

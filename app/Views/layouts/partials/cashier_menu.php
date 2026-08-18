@@ -78,10 +78,13 @@
                 <span class="material-icons text-base">person</span>
                 Profil
             </a>
-            <a href="<?= base_url('logout') ?>" class="flex items-center gap-3 border-t border-stone-100 px-4 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
-                <span class="material-icons text-base">logout</span>
-                Keluar
-            </a>
+            <form action="<?= base_url('logout') ?>" method="post" class="border-t border-stone-100">
+                <?= csrf_field() ?>
+                <button type="submit" class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-medium text-stone-700 transition hover:bg-red-50 hover:text-red-600">
+                    <span class="material-icons text-base">logout</span>
+                    Keluar
+                </button>
+            </form>
         </div>
     </div>
 </aside>

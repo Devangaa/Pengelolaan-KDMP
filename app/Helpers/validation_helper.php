@@ -161,6 +161,192 @@ if (!function_exists('validate_cart')) {
     }
 }
 
+if (!function_exists('validate_id')) {
+    /**
+     * Validate generic ID value (UUID-like or integer-like string)
+     * @param mixed $value
+     * @param string $fieldName
+     * @param bool $allowEmpty
+     * @return array ['valid' => bool, 'value' => string|null, 'error' => string|null]
+     */
+    function validate_id($value, string $fieldName = 'ID', bool $allowEmpty = false): array
+    {
+        if ($value === null || $value === '') {
+            if ($allowEmpty) {
+                return ['valid' => true, 'value' => null, 'error' => null];
+            }
+
+            return ['valid' => false, 'value' => null, 'error' => ucfirst($fieldName) . ' tidak boleh kosong.'];
+        }
+
+        $filtered = trim((string) $value);
+        $filtered = preg_replace('/\s+/', '', $filtered) ?: $filtered;
+
+        if ($filtered === '') {
+            return ['valid' => false, 'value' => null, 'error' => ucfirst($fieldName) . ' tidak valid.'];
+        }
+
+        $isNumericId = preg_match('/^\d+$/', $filtered) === 1;
+        $isUuidId = preg_match('/^[0-9a-fA-F-]{8,36}$/', $filtered) === 1;
+
+        if (!$isNumericId && !$isUuidId) {
+            return ['valid' => false, 'value' => null, 'error' => ucfirst($fieldName) . ' tidak valid.'];
+        }
+
+        return ['valid' => true, 'value' => $filtered, 'error' => null];
+    }
+}
+
+if (!function_exists('validate_product_id')) {
+    function validate_product_id($value): array
+    {
+        return validate_id($value, 'Product ID');
+    }
+}
+
+if (!function_exists('validate_category_id')) {
+    function validate_category_id($value): array
+    {
+        return validate_id($value, 'Kategori', true);
+    }
+}
+
+if (!function_exists('validate_member_id')) {
+    function validate_member_id($value): array
+    {
+        return validate_id($value, 'Member ID', true);
+    }
+}
+
+if (!function_exists('validate_search_keyword')) {
+    /**
+     * Sanitize keyword search from query string
+     * @param mixed $value
+     * @param int $maxLength
+     * @return array ['valid' => bool, 'value' => string|null, 'error' => string|null]
+     */
+    function validate_search_keyword($value, int $maxLength = 100): array
+    {
+        if ($value === null || $value === '') {
+            return ['valid' => true, 'value' => null, 'error' => null];
+        }
+
+        $sanitized = trim((string) $value);
+        $sanitized = preg_replace('/[\x00-\x1F\x7F]/u', '', $sanitized) ?? $sanitized;
+        $sanitized = strip_tags($sanitized);
+
+        if ($sanitized === '') {
+            return ['valid' => true, 'value' => null, 'error' => null];
+        }
+
+        if (mb_strlen($sanitized, 'UTF-8') > $maxLength) {
+            return ['valid' => false, 'value' => null, 'error' => 'Pencarian terlalu panjang. Maksimal ' . $maxLength . ' karakter.'];
+        }
+
+        return ['valid' => true, 'value' => $sanitized, 'error' => null];
+    }
+}
+
+if (!function_exists('validate_sort')) {
+    /**
+     * Validate sort parameter against allowed values
+     * @param mixed $value
+     * @param array $allowed
+     * @return array ['valid' => bool, 'value' => string|null, 'error' => string|null]
+     */
+    function validate_sort($value, array $allowed = ['popular', 'newest', 'name_asc', 'name_desc', 'price_asc', 'price_desc']): array
+    {
+        $sort = strtolower(trim((string) ($value ?? '')));
+
+        if ($sort === '') {
+            return ['valid' => true, 'value' => $allowed[0], 'error' => null];
+        }
+
+        if (!in_array($sort, $allowed, true)) {
+            return ['valid' => false, 'value' => null, 'error' => 'Pilihan urutan tidak valid.'];
+        }
+
+        return ['valid' => true, 'value' => $sort, 'error' => null];
+    }
+}
+
+if (!function_exists('validate_date_range')) {
+    /**
+     * Validate date range based on YYYY-MM-DD
+     * @param mixed $startDate
+     * @param mixed $endDate
+     * @return array ['valid' => bool, 'startDate' => string|null, 'endDate' => string|null, 'error' => string|null]
+     */
+    function validate_date_range($startDate, $endDate): array
+    {
+        $startValidation = validate_date($startDate);
+        if (!$startValidation['valid']) {
+            return ['valid' => false, 'startDate' => null, 'endDate' => null, 'error' => $startValidation['error']];
+        }
+
+        $endValidation = validate_date($endDate);
+        if (!$endValidation['valid']) {
+            return ['valid' => false, 'startDate' => null, 'endDate' => null, 'error' => $endValidation['error']];
+        }
+
+        $normalizedStart = $startValidation['value'];
+        $normalizedEnd = $endValidation['value'];
+
+        if ($normalizedStart !== null && $normalizedEnd !== null && strtotime($normalizedStart) > strtotime($normalizedEnd)) {
+            return ['valid' => false, 'startDate' => null, 'endDate' => null, 'error' => 'Rentang tanggal tidak valid. Tanggal mulai tidak boleh lebih besar dari tanggal akhir.'];
+        }
+
+        return ['valid' => true, 'startDate' => $normalizedStart, 'endDate' => $normalizedEnd, 'error' => null];
+    }
+}
+
+if (!function_exists('validate_quantity')) {
+    /**
+     * Validate quantity for cart items or stock updates
+     * @param mixed $value
+     * @param int $min
+     * @param int $max
+     * @return array ['valid' => bool, 'value' => int, 'error' => string|null]
+     */
+    function validate_quantity($value, int $min = 1, int $max = 9999): array
+    {
+        if ($value === null || $value === '') {
+            return ['valid' => false, 'value' => 0, 'error' => 'Jumlah produk tidak boleh kosong.'];
+        }
+
+        $quantity = filter_var($value, FILTER_VALIDATE_INT);
+
+        if ($quantity === false) {
+            return ['valid' => false, 'value' => 0, 'error' => 'Jumlah produk harus berupa angka bulat.'];
+        }
+
+        if ($quantity < $min || $quantity > $max) {
+            return ['valid' => false, 'value' => 0, 'error' => 'Jumlah produk harus berada di rentang ' . $min . ' sampai ' . $max . '.'];
+        }
+
+        return ['valid' => true, 'value' => (int) $quantity, 'error' => null];
+    }
+}
+
+if (!function_exists('validate_user_access')) {
+    /**
+     * Validate whether role is allowed for the current operation
+     * @param mixed $actualRole
+     * @param array $allowedRoles
+     * @return array ['valid' => bool, 'role' => string|null, 'error' => string|null]
+     */
+    function validate_user_access($actualRole, array $allowedRoles): array
+    {
+        $role = strtolower(trim((string) ($actualRole ?? '')));
+
+        if ($role === '' || !in_array($role, $allowedRoles, true)) {
+            return ['valid' => false, 'role' => null, 'error' => AppConstants::MSG_UNAUTHORIZED];
+        }
+
+        return ['valid' => true, 'role' => $role, 'error' => null];
+    }
+}
+
 if (!function_exists('authorize_user_role')) {
     /**
      * Check if user has required role
